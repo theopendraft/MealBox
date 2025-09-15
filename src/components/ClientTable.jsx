@@ -12,10 +12,10 @@ export default function ClientTable({ clients, onDeleteSuccess, onEditClick }) {
       try {
         // Create a reference to the specific client document in Firestore
         const clientDocRef = doc(db, 'clients', clientId);
-        
+
         // Delete the document from Firestore
         await deleteDoc(clientDocRef);
-        
+
         // Call the success callback function passed from the parent to refresh the list
         onDeleteSuccess();
       } catch (error) {
@@ -55,20 +55,35 @@ export default function ClientTable({ clients, onDeleteSuccess, onEditClick }) {
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{client.phone}</td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-900">₹{client.plan.price}</div>
-                <div className="text-sm text-gray-500">{client.plan.name}</div>
+                {client.plan && (client.plan.lunch || client.plan.dinner) ? (
+                  <>
+                    <div className="text-sm text-gray-900">
+                      {client.plan.lunch?.subscribed ? `Lunch: ₹${client.plan.lunch.price}` : ''}
+                      {client.plan.lunch?.subscribed && client.plan.dinner?.subscribed ? ' | ' : ''}
+                      {client.plan.dinner?.subscribed ? `Dinner: ₹${client.plan.dinner.price}` : ''}
+                    </div>
+                    {(client.plan.startDate || client.plan.endDate) && (
+                      <div className="text-xs text-gray-500">
+                        {client.plan.startDate ? `From: ${client.plan.startDate}` : ''}
+                        {client.plan.startDate && client.plan.endDate ? ' - ' : ''}
+                        {client.plan.endDate ? `To: ${client.plan.endDate}` : ''}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="text-sm text-gray-500 italic">On-demand</div>
+                )}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    client.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${client.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
                   }`}
                 >
                   {client.status}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button 
-                  onClick={() => onEditClick(client)} 
+                <button
+                  onClick={() => onEditClick(client)}
                   className="text-indigo-600 hover:text-indigo-900"
                 >
                   Edit

@@ -1,15 +1,15 @@
 // src/routes/ProtectedRoute.jsx
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Layout from '../components/Layout'; // 1. Import the Layout
 
 export default function ProtectedRoute({ children }) {
-  const { currentUser } = useAuth(); // Get the current user from our context
+  const { currentUser } = useAuth();
 
   if (!currentUser) {
-    // If no user is logged in, redirect to the login page
     return <Navigate to="/login" />;
   }
 
-  // If a user is logged in, show the page
-  return children;
+  // 2. Wrap the children with the Layout component
+  return <Layout>{children}</Layout>;
 }
