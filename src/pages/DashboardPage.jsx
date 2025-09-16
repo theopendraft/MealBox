@@ -46,21 +46,86 @@ export default function DashboardPage() {
           const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
           const todayDayName = dayNames[new Date().getDay()];
           const finalList = [];
-          
+
           const clientsSnapshot = await getDocs(activeClientsQuery);
+
           for (const clientDoc of clientsSnapshot.docs) {
             const client = { id: clientDoc.id, ...clientDoc.data() };
-            if (!client.deliverySchedule || !client.deliverySchedule[todayDayName]) continue;
 
-            const pausesQuery = query(collection(db, 'clients', client.id, 'pauses'));
-            const pausesSnapshot = await getDocs(pausesQuery);
-            let isPausedToday = false;
-            for (const pauseDoc of pausesSnapshot.docs) {
-              const p = pauseDoc.data();
-              if (todayStr >= p.startDate && todayStr <= p.endDate) { isPausedToday = true; break; }
+            // Handle On-Demand Clients
+            if (client.customerType === 'ondemand') {
+              // Check if main on-demand order is for today
+              if (client.plan?.date === todayStr && client.plan?.mealType) {
+                finalList.push({
+                  ...client,
+                  mealType: client.plan.mealType,
+                  orderType: 'main',
+                  price: client.plan.price || 0
+                });
+              }
             }
-            if (!isPausedToday) finalList.push(client);
+
+            // Handle Subscription Clients with regular delivery schedule
+            if (client.customerType === 'subscribed' && client.deliverySchedule && client.deliverySchedule[todayDayName]) {
+              // Check for pauses
+              const pausesQuery = query(collection(db, 'clients', client.id, 'pauses'));
+              const pausesSnapshot = await getDocs(pausesQuery);
+              let lunchPaused = false;
+              let dinnerPaused = false;
+
+              for (const pauseDoc of pausesSnapshot.docs) {
+                const p = pauseDoc.data();
+                if (todayStr >= p.startDate && todayStr <= p.endDate) {
+                  if (p.mealType === 'lunch' || p.mealType === 'both') lunchPaused = true;
+                  if (p.mealType === 'dinner' || p.mealType === 'both') dinnerPaused = true;
+                }
+              }
+
+              // Add lunch delivery if subscribed and not paused
+              if (client.plan?.lunch?.subscribed && !lunchPaused) {
+                finalList.push({
+                  ...client,
+                  mealType: 'lunch',
+                  orderType: 'subscription',
+                  price: client.plan.lunch.price || 0
+                });
+              }
+
+              // Add dinner delivery if subscribed and not paused
+              if (client.plan?.dinner?.subscribed && !dinnerPaused) {
+                finalList.push({
+                  ...client,
+                  mealType: 'dinner',
+                  orderType: 'subscription',
+                  price: client.plan.dinner.price || 0
+                });
+              }
+            }
+
+            // Handle Single Tiffin Orders for ALL clients (both subscription and on-demand)
+            const ordersQuery = query(collection(db, 'clients', client.id, 'orders'));
+            const ordersSnapshot = await getDocs(ordersQuery);
+
+            for (const orderDoc of ordersSnapshot.docs) {
+              const order = orderDoc.data();
+              let orderDateStr = order.orderDate;
+
+              // Handle Firestore timestamp if needed
+              if (order.orderDate && typeof order.orderDate.toDate === 'function') {
+                orderDateStr = order.orderDate.toDate().toISOString().slice(0, 10);
+              }
+
+              if (orderDateStr === todayStr && order.mealType) {
+                finalList.push({
+                  ...client,
+                  mealType: order.mealType,
+                  orderType: 'single',
+                  price: order.price || 0
+                });
+              }
+            }
           }
+
           return finalList;
         };
 
@@ -72,7 +137,7 @@ export default function DashboardPage() {
           where('billingMonth', '==', currentMonthStr),
           where('status', '==', 'paid')
         );
-        const revenuePromise = getDocs(revenueQuery).then(snapshot => 
+        const revenuePromise = getDocs(revenueQuery).then(snapshot =>
           snapshot.docs.reduce((sum, doc) => sum + doc.data().finalAmount, 0)
         );
 
@@ -82,10 +147,10 @@ export default function DashboardPage() {
           where('ownerId', '==', currentUser.uid),
           where('status', '==', 'unpaid')
         );
-        const pendingPromise = getDocs(pendingQuery).then(snapshot => 
+        const pendingPromise = getDocs(pendingQuery).then(snapshot =>
           snapshot.docs.reduce((sum, doc) => sum + doc.data().finalAmount, 0)
         );
-        
+
         // --- Await all promises together ---
         const [
           activeClientsCount,
@@ -119,11 +184,11 @@ export default function DashboardPage() {
   if (loading) {
     return <div className="p-8 text-center">Loading Dashboard...</div>;
   }
-  
+
   return (
     <div>
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
-      
+
       {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white p-6 rounded-lg shadow-md">
@@ -143,7 +208,7 @@ export default function DashboardPage() {
           <p className="text-3xl font-bold text-red-600">₹{stats.pendingPayments.toLocaleString('en-IN')}</p>
         </div>
       </div>
-      
+
       {/* Today's Schedule Widget */}
       <div className="mt-10 bg-white p-6 rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
@@ -155,14 +220,27 @@ export default function DashboardPage() {
         ) : (
           <div className="space-y-4 max-h-96 overflow-y-auto">
             {deliveryList.length > 0 ? (
-              deliveryList.map(client => (
-                <div key={client.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+              deliveryList.map((delivery, index) => (
+                <div key={`${delivery.id}-${delivery.mealType}-${index}`} className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
                   <div>
-                    <p className="font-medium text-gray-800">{client.name}</p>
-                    <p className="text-sm text-gray-500">{client.address}</p>
+                    <p className="font-medium text-gray-800">{delivery.name}</p>
+                    <p className="text-sm text-gray-500">{delivery.address}</p>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${delivery.mealType === 'lunch' ? 'bg-yellow-100 text-yellow-800' : 'bg-purple-100 text-purple-800'
+                        }`}>
+                        {delivery.mealType?.charAt(0).toUpperCase() + delivery.mealType?.slice(1)}
+                      </span>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${delivery.orderType === 'subscription' ? 'bg-green-100 text-green-800' :
+                          delivery.orderType === 'main' ? 'bg-blue-100 text-blue-800' : 'bg-indigo-100 text-indigo-800'
+                        }`}>
+                        {delivery.orderType === 'subscription' ? 'Subscription' :
+                          delivery.orderType === 'main' ? 'On-Demand' : 'Single Order'}
+                      </span>
+                    </div>
                   </div>
                   <div className="text-right flex-shrink-0 ml-4">
-                    <p className="text-sm font-semibold text-indigo-600">{client.deliveryTimePreference}</p>
+                    <p className="text-sm font-semibold text-indigo-600">{delivery.deliveryTimePreference}</p>
+                    <p className="text-xs text-gray-500">₹{delivery.price}</p>
                   </div>
                 </div>
               ))

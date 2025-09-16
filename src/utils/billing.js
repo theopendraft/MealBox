@@ -7,7 +7,78 @@ export const calculateBillForClient = async (
   startDateStr,
   endDateStr
 ) => {
-  // Use the provided start and end dates
+  // On-demand client: use plan data + any additional single orders
+  if (client.customerType === "ondemand") {
+    let mainOrderAmount = 0;
+    let planOrder = null;
+
+    // Check if client's main on-demand order falls within billing period
+    if (client.plan?.date && client.plan?.price) {
+      const planDate = client.plan.date;
+      if (planDate >= startDateStr && planDate <= endDateStr) {
+        mainOrderAmount = client.plan.price;
+        planOrder = {
+          orderDate: planDate,
+          mealType: client.plan.mealType,
+          price: client.plan.price,
+        };
+      }
+    }
+
+    // Also fetch any additional single tiffin orders
+    const ordersSnapshot = await getDocs(
+      collection(db, "clients", client.id, "orders")
+    );
+    const allOrdersRaw = ordersSnapshot.docs.map((doc) => doc.data());
+    const extraOrders = allOrdersRaw.filter((order) => {
+      let orderDateStr = null;
+      if (typeof order.orderDate === "string") {
+        orderDateStr = order.orderDate;
+      } else if (
+        order.orderDate &&
+        typeof order.orderDate.toDate === "function"
+      ) {
+        const d = order.orderDate.toDate();
+        orderDateStr = d.toISOString().slice(0, 10);
+      }
+      return (
+        orderDateStr &&
+        orderDateStr >= startDateStr &&
+        orderDateStr <= endDateStr
+      );
+    });
+
+    const extraOrdersAmount = extraOrders.reduce(
+      (sum, order) => sum + (order.price || 0),
+      0
+    );
+
+    const finalAmount = mainOrderAmount + extraOrdersAmount;
+
+    return {
+      clientId: client.id,
+      clientName: client.name,
+      ownerId: client.ownerId,
+      billingPeriod: { start: startDateStr, end: endDateStr },
+      finalAmount,
+      status: "unpaid",
+      details: {
+        lunchesDelivered: 0,
+        dinnersDelivered: 0,
+        lunchPrice: 0,
+        dinnerPrice: 0,
+        // Main on-demand order details
+        mainOrder: planOrder,
+        mainOrderAmount,
+        // Extra single orders details
+        extraOrdersCount: extraOrders.length,
+        extraOrdersAmount,
+        extraOrders: extraOrders,
+      },
+    };
+  }
+
+  // Subscription client: original logic
   const periodStart = new Date(
     Date.UTC(
       new Date(startDateStr).getFullYear(),
@@ -74,7 +145,6 @@ export const calculateBillForClient = async (
 
   const lunchPrice = client.plan?.lunch?.price || 0;
   const dinnerPrice = client.plan?.dinner?.price || 0;
-  // This calculates the bill from the subscription
   let subscriptionAmount =
     lunchesDelivered * lunchPrice + dinnersDelivered * dinnerPrice;
 

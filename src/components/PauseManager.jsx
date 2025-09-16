@@ -12,19 +12,23 @@ const generateCalendarEvents = (client, pauses, orders) => {
   const events = [];
   const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
-  // If on-demand client, show all single tiffin orders as events
-  if (client.customerType === 'ondemand' && Array.isArray(orders) && orders.length > 0) {
-    orders.forEach(order => {
-      if (order.orderDate && order.mealType) {
-        const eventTitle = `Order: ${order.mealType.charAt(0).toUpperCase() + order.mealType.slice(1)}`;
-        events.push({ title: eventTitle, start: order.orderDate, color: '#4F46E5', allDay: true });
-      }
-    });
-    return events;
-  } else if (client.customerType === 'ondemand' && client.plan?.date && client.plan?.mealType) {
-    // fallback: show plan date if no orders found
-    const eventTitle = `Order: ${client.plan.mealType.charAt(0).toUpperCase() + client.plan.mealType.slice(1)}`;
-    events.push({ title: eventTitle, start: client.plan.date, color: '#4F46E5', allDay: true });
+  // If on-demand client, show main order + single tiffin orders
+  if (client.customerType === 'ondemand') {
+    // First, add the main on-demand order from client.plan
+    if (client.plan?.date && client.plan?.mealType) {
+      const mainEventTitle = `Main: ${client.plan.mealType.charAt(0).toUpperCase() + client.plan.mealType.slice(1)}`;
+      events.push({ title: mainEventTitle, start: client.plan.date, color: '#10B981', allDay: true });
+    }
+
+    // Then, add all single tiffin orders
+    if (Array.isArray(orders) && orders.length > 0) {
+      orders.forEach(order => {
+        if (order.orderDate && order.mealType) {
+          const eventTitle = `Extra: ${order.mealType.charAt(0).toUpperCase() + order.mealType.slice(1)}`;
+          events.push({ title: eventTitle, start: order.orderDate, color: '#4F46E5', allDay: true });
+        }
+      });
+    }
     return events;
   }
 

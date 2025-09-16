@@ -26,6 +26,7 @@ export default function GenerateBillPage() {
       const docSnap = await getDoc(doc(db, 'clients', clientId));
       if (docSnap.exists()) {
         const clientData = { id: docSnap.id, ...docSnap.data() };
+
         setClient(clientData);
 
         // --- Find all scheduled tiffin dates (subscription and single orders) ---
@@ -43,9 +44,11 @@ export default function GenerateBillPage() {
         // Single tiffin orders
         const ordersSnapshot = await getDocs(query(collection(db, 'clients', clientId, 'orders')));
         const orderDates = ordersSnapshot.docs.map(doc => doc.data().orderDate).filter(Boolean);
+        console.log('[DEBUG] Single order dates:', orderDates);
         allDates = allDates.concat(orderDates);
         // Remove duplicates and sort
         allDates = Array.from(new Set(allDates)).sort();
+        console.log('[DEBUG] All scheduled dates:', allDates);
         if (allDates.length > 0) {
           setStartDate(allDates[0]);
           setEndDate(allDates[allDates.length - 1]);
@@ -66,7 +69,13 @@ export default function GenerateBillPage() {
     setIsCalculating(true);
     setBillPreview(null);
     try {
+      console.log('[DEBUG] Calculating bill for:', {
+        client,
+        startDate,
+        endDate
+      });
       const calculatedData = await calculateBillForClient(client, startDate, endDate);
+      console.log('[DEBUG] Bill calculation result:', calculatedData);
       setBillPreview(calculatedData);
     } catch (error) {
       console.error("Error calculating bill:", error);
@@ -137,16 +146,42 @@ export default function GenerateBillPage() {
           <div className="mt-6 bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold">2. Review & Confirm</h3>
             <div className="mt-4 space-y-2 border-t pt-4">
-              {/* --- UPDATED BILL PREVIEW SECTION --- */}
-              <div className="flex justify-between">
-                <span className="text-gray-600">Subscription Lunches:</span>
-                <span className="font-medium">{billPreview.details.lunchesDelivered} x ₹{billPreview.details.lunchPrice}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Subscription Dinners:</span>
-                <span className="font-medium">{billPreview.details.dinnersDelivered} x ₹{billPreview.details.dinnerPrice}</span>
-              </div>
-              {/* NEW: Conditionally render the extra orders line */}
+              {/* Show subscription fields for subscribed clients, and meal info for on-demand */}
+              {client?.customerType === 'subscribed' ? (
+                <>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Subscription Lunches:</span>
+                    <span className="font-medium">{billPreview.details.lunchesDelivered} x ₹{billPreview.details.lunchPrice}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Subscription Dinners:</span>
+                    <span className="font-medium">{billPreview.details.dinnersDelivered} x ₹{billPreview.details.dinnerPrice}</span>
+
+                  </div>
+                </>
+              ) : (
+                <>
+                  {console.log('[DEBUG] mainOrder:', billPreview.details.mainOrder)}
+                  {console.log('[DEBUG] extraOrders:', billPreview.details.extraOrders)}
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Meal Type:</span>
+                    <span className="font-medium">{
+                      billPreview.details.mainOrder?.mealType || client?.plan?.mealType || '-'
+                    }</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Order Date:</span>
+                    <span className="font-medium">{
+                      billPreview.details.mainOrder?.orderDate || client?.plan?.date || '-'
+                    }</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">OnDemand Tiffin Price:</span>
+                    <span className="font-medium">₹{billPreview.details.mainOrderAmount || 0}</span>
+                  </div>
+                </>
+              )}
+              {/* Show extra single orders only if they exist */}
               {billPreview.details.extraOrdersCount > 0 && (
                 <div className="flex justify-between">
                   <span className="text-gray-600">Extra Single Orders:</span>

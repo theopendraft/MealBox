@@ -1,7 +1,7 @@
 // src/components/OrderManager.jsx
 import { useState, useEffect } from 'react';
 import { db } from '../config/firebase';
-import { collection, addDoc, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 
 const getTodayDateString = () => new Date().toISOString().slice(0, 10);
 
@@ -64,6 +64,17 @@ export default function OrderManager({ client }) {
     }
   };
 
+  const handleDeleteOrder = async (orderId, orderDate, mealType) => {
+    if (window.confirm(`Are you sure you want to cancel the ${mealType} order for ${orderDate}?`)) {
+      try {
+        await deleteDoc(doc(db, 'clients', client.id, 'orders', orderId));
+      } catch (error) {
+        console.error("Error deleting order:", error);
+        alert("Failed to cancel order.");
+      }
+    }
+  };
+
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
       <h2 className="text-2xl font-bold mb-4">Single Tiffin Orders</h2>
@@ -72,7 +83,7 @@ export default function OrderManager({ client }) {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium">Date</label>
-            <input type="date" value={orderDate} onChange={(e) => setOrderDate(e.target.value)} className="mt-1 w-full input-style"/>
+            <input type="date" value={orderDate} onChange={(e) => setOrderDate(e.target.value)} className="mt-1 w-full input-style" />
           </div>
           <div>
             <label className="block text-sm font-medium">Meal</label>
@@ -83,7 +94,7 @@ export default function OrderManager({ client }) {
           </div>
           <div>
             <label className="block text-sm font-medium">Price (₹)</label>
-            <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" className="mt-1 w-full input-style"/>
+            <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" className="mt-1 w-full input-style" />
           </div>
         </div>
         <button type="submit" disabled={isSaving} className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:bg-blue-400">
@@ -101,7 +112,16 @@ export default function OrderManager({ client }) {
               <p className="font-medium">{order.orderDate}</p>
               <p className="text-sm text-gray-600 capitalize">{order.mealType}</p>
             </div>
-            <p className="font-semibold">₹{order.price}</p>
+            <div className="flex items-center space-x-2">
+              <p className="font-semibold">₹{order.price}</p>
+              <button
+                onClick={() => handleDeleteOrder(order.id, order.orderDate, order.mealType)}
+                className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
+                title="Cancel Order"
+              >
+                ✕
+              </button>
+            </div>
           </div>
         ))}
       </div>

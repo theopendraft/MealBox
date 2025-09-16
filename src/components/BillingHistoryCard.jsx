@@ -15,7 +15,7 @@ export default function BillingHistoryCard({ client }) {
     }
 
     setLoading(true);
-    
+
     const billsQuery = query(
       collection(db, 'bills'),
       where('ownerId', '==', client.ownerId),
@@ -25,9 +25,7 @@ export default function BillingHistoryCard({ client }) {
 
     // Set up the real-time listener
     const unsubscribe = onSnapshot(billsQuery, (querySnapshot) => {
-      // Add this log to see the real-time updates in your console!
-      console.log(`🔥 Real-time update received! Found ${querySnapshot.size} bills.`);
-      
+
       const billsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setBillingHistory(billsData);
       setLoading(false);
@@ -59,9 +57,9 @@ export default function BillingHistoryCard({ client }) {
         <p className="font-bold">Total Amount Due</p>
         <p className="text-3xl">₹{totalDue.toLocaleString('en-IN')}</p>
       </div>
-      
+
       <div className="mt-4">
-        <Link 
+        <Link
           to={`/clients/${client.id}/generate-bill`}
           className="w-full block text-center bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
         >
@@ -74,23 +72,24 @@ export default function BillingHistoryCard({ client }) {
         {billingHistory.length > 0 ? (
           billingHistory.map(bill => (
             <div key={bill.id} className="border-b pb-2">
-              <div className="flex justify-between items-center">
-                <p className="font-medium">
-                  {bill.billingMonth ? `Bill for ${bill.billingMonth}` : `Bill: ${bill.billingPeriod?.start} to ${bill.billingPeriod?.end}`}
-                </p>
-                <p className="font-bold">₹{bill.finalAmount}</p>
-              </div>
-              <div className="flex justify-between items-center text-sm">
-                 <p className="text-gray-500">
-                   {bill.generatedAt ? new Date(bill.generatedAt.toDate()).toLocaleDateString('en-IN') : 'N/A'}
-                 </p>
-                 <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    bill.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                  }`}
-                 >
-                   {bill.status}
-                 </span>
-              </div>
+              <Link to={`/bills/${bill.id}`} className="block hover:bg-gray-50 p-2 rounded transition-colors">
+                <div className="flex justify-between items-center">
+                  <p className="font-medium text-indigo-600 hover:text-indigo-800">
+                    {bill.billingMonth ? `Bill for ${bill.billingMonth}` : `Bill: ${bill.billingPeriod?.start} to ${bill.billingPeriod?.end}`}
+                  </p>
+                  <p className="font-bold">₹{bill.finalAmount}</p>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <p className="text-gray-500">
+                    {bill.generatedAt ? new Date(bill.generatedAt.toDate()).toLocaleDateString('en-IN') : 'N/A'}
+                  </p>
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${bill.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {bill.status}
+                  </span>
+                </div>
+              </Link>
             </div>
           ))
         ) : (

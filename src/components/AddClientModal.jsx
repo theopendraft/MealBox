@@ -133,18 +133,28 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
           endDate: plan.endDate,
         };
         dataPayload.deliverySchedule = deliverySchedule;
+      } else if (formData.customerType === 'ondemand') {
+        // Use direct price input for on-demand client
+        dataPayload.plan = {
+          date: plan.date,
+          mealType: plan.mealType,
+          price: Number(plan.price) || 0,
+        };
       }
 
       if (clientToEdit) {
         await updateDoc(doc(db, 'clients', clientToEdit.id), dataPayload);
+        // Pass the updated client data back to the parent
+        const updatedClient = { ...clientToEdit, ...dataPayload };
+        onSuccess(updatedClient);
       } else {
         const fullPayload = { ...dataPayload, status: 'active', ownerId: currentUser.uid, createdAt: serverTimestamp() };
-        await addDoc(collection(db, 'clients'), fullPayload);
+        const docRef = await addDoc(collection(db, 'clients'), fullPayload);
+        const newClient = { id: docRef.id, ...fullPayload };
+        onSuccess(newClient);
       }
-      onSuccess();
     } catch (error) {
       console.error("Error saving client:", error);
-      alert("Failed to save client.");
     } finally {
       setIsSaving(false);
     }
@@ -180,7 +190,7 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
           formData.plan.startDate
         );
       } else if (isOnDemand) {
-        return formData.plan.date && formData.deliveryTimePreference && formData.plan.mealType;
+        return formData.plan.date && formData.deliveryTimePreference && formData.plan.mealType && formData.plan.price;
       }
     }
     return true;
@@ -303,6 +313,13 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                       <option value="lunch">Lunch</option>
                       <option value="dinner">Dinner</option>
                     </select>
+                  </div>
+                  <div>
+                    <label htmlFor="plan-price" className="block text-sm font-medium">Price per Tiffin</label>
+                    <div className="flex items-center">
+                      <span className="mr-2">₹</span>
+                      <input type="number" name="plan-price" id="plan-price" required value={formData.plan.price || ''} onChange={handleChange} className="mt-1 block w-32 input-style" placeholder="Price" />
+                    </div>
                   </div>
                   <div>
                     <label htmlFor="deliveryTimePreference" className="block text-sm font-medium">Preferred Delivery Time</label>

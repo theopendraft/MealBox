@@ -1,4 +1,5 @@
 // src/components/BillsTable.jsx
+import { Link } from 'react-router-dom';
 import { db } from '../config/firebase';
 import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import GeneratePDFButton from './GeneratePDFButton';
@@ -52,10 +53,29 @@ export default function BillsTable({ bills, clients, onStatusChange }) {
 
             return (
               <tr key={bill.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{bill.clientName}</td>
-                <td className="px-6 py-4 whitespace-nowrap font-bold text-lg text-gray-900">₹{bill.finalAmount}</td>
+                <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                  <Link
+                    to={`/bills/${bill.id}`}
+                    className="text-indigo-600 hover:text-indigo-900 hover:underline"
+                  >
+                    {bill.clientName}
+                  </Link>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap font-bold text-lg text-gray-900">
+                  <Link
+                    to={`/bills/${bill.id}`}
+                    className="text-indigo-600 hover:text-indigo-900 hover:underline"
+                  >
+                    ₹{bill.finalAmount}
+                  </Link>
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {bill.deliveredDays} of {bill.totalDaysInMonth} days
+                  <Link
+                    to={`/bills/${bill.id}`}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    {bill.deliveredDays} of {bill.totalDaysInMonth} days
+                  </Link>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${bill.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'

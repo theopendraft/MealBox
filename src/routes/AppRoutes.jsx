@@ -8,6 +8,7 @@ import ClientDetailPage from '../pages/ClientDetailPage';
 import DailyDeliveryPage from '../pages/DailyDeliveryPage';
 import BillingPage from '../pages/BillingPage';
 import GenerateBillPage from '../pages/GenerateBillPage';
+import BillDetailPage from '../pages/BillDetailPage';
 
 export default function AppRoutes() {
   return (
@@ -18,9 +19,10 @@ export default function AppRoutes() {
       <Route path="/clients/:clientId" element={<ProtectedRoute><ClientDetailPage /></ProtectedRoute>} />
       <Route path="/deliveries" element={<ProtectedRoute><DailyDeliveryPage /></ProtectedRoute>} />
       <Route path="/billing" element={<ProtectedRoute><BillingPage /></ProtectedRoute>} />
-      <Route 
-        path="/clients/:clientId/generate-bill" 
-        element={<ProtectedRoute><GenerateBillPage /></ProtectedRoute>} 
+      <Route path="/bills/:billId" element={<ProtectedRoute><BillDetailPage /></ProtectedRoute>} />
+      <Route
+        path="/clients/:clientId/generate-bill"
+        element={<ProtectedRoute><GenerateBillPage /></ProtectedRoute>}
       />
     </Routes>
   );

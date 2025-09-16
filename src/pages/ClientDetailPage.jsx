@@ -37,12 +37,16 @@ export default function ClientDetailPage() {
   if (loading) return <div className="p-8 text-center">Loading client details...</div>;
   if (!client) return <div className="p-8 text-center">Client not found. <Link to="/clients" className="text-indigo-600">Go back</Link></div>;
 
+  const handleClientUpdate = (updatedClient) => {
+    setClient(updatedClient);
+  };
+
   return (
     <div>
       <Link to="/clients" className="text-indigo-600 hover:underline my-6 mx-8 block">&larr; Back to all clients</Link>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 px-8 pb-8">
         <div className="lg:col-span-1 space-y-8">
-          <ClientInfoCard client={client} />
+          <ClientInfoCard client={client} onClientUpdate={handleClientUpdate} />
           {/* --- THE FIX IS HERE --- */}
           <BillingHistoryCard client={client} />
           <OrderManager client={client} />

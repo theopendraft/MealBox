@@ -55,6 +55,7 @@ export const generateBillPDF = (bill, client, qrCodeDataURL) => {
   const tableRows = [];
   const details = bill.details || {};
 
+  // For subscription clients
   if (details.lunchesDelivered > 0) {
     tableRows.push([
       "Subscription Lunch Tiffin",
@@ -75,9 +76,21 @@ export const generateBillPDF = (bill, client, qrCodeDataURL) => {
       )}`,
     ]);
   }
-  if (details.extraOrdersCount > 0) {
+
+  // For on-demand clients - show main order
+  if (details.mainOrder && details.mainOrderAmount > 0) {
     tableRows.push([
-      "Extra / On-Demand Tiffins",
+      `On-Demand ${details.mainOrder.mealType || "Tiffin"}`,
+      1,
+      `Rs.${details.mainOrderAmount}`,
+      `Rs.${details.mainOrderAmount.toLocaleString("en-IN")}`,
+    ]);
+  }
+
+  // For both types - show extra single orders if any
+  if (details.extraOrdersCount > 0 && details.extraOrdersAmount > 0) {
+    tableRows.push([
+      "Extra Single Tiffins",
       details.extraOrdersCount,
       "-",
       `Rs.${details.extraOrdersAmount.toLocaleString("en-IN")}`,
