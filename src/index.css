@@ -1,12 +1,12 @@
 /* src/index.css */
+/* Import existing styles first */
+@import "./styles/animations.css";
+@import "./styles/theme.css";
+
 /* Import Tailwind directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import existing animations */
-@import "./styles/animations.css";
-@import "./styles/theme.css";
 
 /* Font Configuration */
 :root {
