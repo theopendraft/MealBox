@@ -14,6 +14,17 @@ export default function ClientDetailPage() {
   const [loading, setLoading] = useState(true);
   const { clientId } = useParams();
 
+  // Check if a client was added recently (within last 48 hours)
+  const isRecentlyAdded = (client) => {
+    if (!client?.createdAt) return false;
+
+    const now = new Date();
+    const createdAt = client.createdAt.toDate ? client.createdAt.toDate() : new Date(client.createdAt);
+    const hoursDiff = (now - createdAt) / (1000 * 60 * 60);
+
+    return hoursDiff <= 48;
+  };
+
   useEffect(() => {
     if (!clientId) return;
     const fetchClientData = async () => {
@@ -44,6 +55,26 @@ export default function ClientDetailPage() {
   return (
     <div>
       <Link to="/clients" className="text-indigo-600 hover:underline my-6 mx-8 block">&larr; Back to all clients</Link>
+
+      {/* New Client Banner */}
+      {isRecentlyAdded(client) && (
+        <div className="mx-8 mb-6 bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-lg p-4">
+          <div className="flex items-center space-x-3">
+            <div className="flex-shrink-0">
+              <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-sm font-medium text-red-800">
+                Recently Added Client
+              </h3>
+              <p className="text-sm text-red-700">
+                This client was added recently and may need additional setup or verification.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 px-8 pb-8">
         <div className="lg:col-span-1 space-y-8">
           <ClientInfoCard client={client} onClientUpdate={handleClientUpdate} />

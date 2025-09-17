@@ -1,12 +1,14 @@
 // src/App.jsx
 import AppRoutes from './routes/AppRoutes';
+import { ThemeProvider } from './context/ThemeContext';
 
 function App() {
-  // For now, our App component just renders our routes
   return (
-    <div>
-      <AppRoutes />
-    </div>
+    <ThemeProvider>
+      <div className="min-h-screen transition-colors duration-300">
+        <AppRoutes />
+      </div>
+    </ThemeProvider>
   );
 }
 

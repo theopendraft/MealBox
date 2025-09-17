@@ -5,6 +5,17 @@ import { doc, deleteDoc } from 'firebase/firestore';
 
 export default function ClientTable({ clients, onDeleteSuccess, onEditClick }) {
 
+  // Check if a client was added recently (within last 48 hours)
+  const isRecentlyAdded = (client) => {
+    if (!client.createdAt) return false;
+
+    const now = new Date();
+    const createdAt = client.createdAt.toDate ? client.createdAt.toDate() : new Date(client.createdAt);
+    const hoursDiff = (now - createdAt) / (1000 * 60 * 60);
+
+    return hoursDiff <= 48; // Consider recent if added within last 48 hours
+  };
+
   // Handles the deletion of a client document
   const handleDelete = async (clientId, clientName) => {
     // Ask for confirmation before proceeding with a destructive action
@@ -49,7 +60,15 @@ export default function ClientTable({ clients, onDeleteSuccess, onEditClick }) {
             <tr key={client.id} className="hover:bg-gray-50">
               <td className="px-6 py-4 whitespace-nowrap">
                 <Link to={`/clients/${client.id}`} className="hover:underline">
-                  <div className="text-sm font-medium text-indigo-600">{client.name}</div>
+                  <div className="flex items-center space-x-2">
+                    <div className="text-sm font-medium text-indigo-600">{client.name}</div>
+                    {isRecentlyAdded(client) && (
+                      <div className="relative">
+                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                        <div className="absolute inset-0 w-2 h-2 bg-red-500 rounded-full animate-ping opacity-75"></div>
+                      </div>
+                    )}
+                  </div>
                 </Link>
                 <div className="text-sm text-gray-500">{client.address}</div>
               </td>
@@ -80,6 +99,11 @@ export default function ClientTable({ clients, onDeleteSuccess, onEditClick }) {
                 >
                   {client.status}
                 </span>
+                {isRecentlyAdded(client) && (
+                  <span className="ml-2 px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full border border-red-200">
+                    NEW
+                  </span>
+                )}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <button
