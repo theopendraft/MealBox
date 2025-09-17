@@ -543,9 +543,7 @@ const LandingPage = () => {
                     {/* Company Info */}
                     <div className="col-span-1 md:col-span-2">
                         <div className="flex items-center mb-4">
-                            <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
-                                <span className="text-white font-bold text-lg">M</span>
-                            </div>
+                            <img src="/MealBox.png" alt="MealBox Logo" className="w-10 h-10 mr-2" />
                             <span className="text-2xl font-bold">MealBox</span>
                         </div>
                         <p className="text-gray-300 mb-6 max-w-md">
@@ -617,9 +615,7 @@ const LandingPage = () => {
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
                     <div className="flex items-center">
-                        <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center mr-2">
-                            <span className="text-white font-bold">M</span>
-                        </div>
+                        <img src="/MealBox.png" alt="MealBox Logo" className="w-8 h-8 mr-2" />
                         <span className="text-xl font-bold text-gray-900">MealBox</span>
                     </div>
 
