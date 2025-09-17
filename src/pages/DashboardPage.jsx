@@ -410,7 +410,7 @@ export default function DashboardPage() {
             <div className="flex-shrink-0">
               <Button
                 asChild
-                className="bg-white text-indigo-600 hover:bg-indigo-50 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                className=" text-indigo-600 bg-transparent hover:bg-indigo-50 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
               >
                 <Link to="/dashboard/analytics" className="inline-flex items-center px-6 py-3 font-semibold">
                   <ChartBarIcon className="h-5 w-5 mr-2" />

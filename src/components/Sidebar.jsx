@@ -29,18 +29,18 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const navLinks = [
     {
       name: 'Dashboard',
-      path: '/',
+      path: '/dashboard',
       icon: HomeIcon,
       iconSolid: HomeIconSolid,
       description: 'Overview & quick stats'
     },
-    {
-      name: 'Analytics',
-      path: '/dashboard/analytics',
-      icon: ChartBarIcon,
-      iconSolid: ChartBarIconSolid,
-      description: 'Business insights'
-    },
+    // {
+    //   name: 'Analytics',
+    //   path: '/dashboard/analytics',
+    //   icon: ChartBarIcon,
+    //   iconSolid: ChartBarIconSolid,
+    //   description: 'Business insights'
+    // },
     {
       name: 'Clients',
       path: '/clients',

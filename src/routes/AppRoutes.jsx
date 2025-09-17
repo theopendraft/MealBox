@@ -1,6 +1,7 @@
 // src/routes/AppRoutes.jsx
 import { Route, Routes } from 'react-router-dom';
 import AuthPage from '../pages/AuthPage';
+import LandingPage from '../pages/LandingPage';
 import DashboardPage from '../pages/DashboardPage';
 import AnalyticsPage from '../pages/AnalyticsPage';
 import UserProfile from '../pages/UserProfile';
@@ -16,7 +17,8 @@ import BillDetailPage from '../pages/BillDetailPage';
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+      <Route path="/" element={<LandingPage />} />
+
       <Route path="/login" element={<AuthPage />} />
       <Route path="/auth" element={<AuthPage />} />
       <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
