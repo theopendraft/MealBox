@@ -28,9 +28,9 @@ const Toast = ({
     const types = {
         success: {
             icon: CheckCircleIcon,
-            bgColor: 'bg-green-50 border-green-200',
-            iconColor: 'text-green-600',
-            textColor: 'text-green-800'
+            bgColor: 'bg-orange-50 border-orange-200',
+            iconColor: 'text-orange-600',
+            textColor: 'text-orange-800'
         },
         error: {
             icon: XCircleIcon,
@@ -46,9 +46,9 @@ const Toast = ({
         },
         info: {
             icon: InformationCircleIcon,
-            bgColor: 'bg-blue-50 border-blue-200',
-            iconColor: 'text-blue-600',
-            textColor: 'text-blue-800'
+            bgColor: 'bg-red-50 border-red-200',
+            iconColor: 'text-red-600',
+            textColor: 'text-red-800'
         }
     };
 

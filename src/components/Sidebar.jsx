@@ -129,7 +129,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
               onClick={() => setSidebarOpen(false)}
               className={({ isActive }) =>
                 `group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 hover:scale-[1.02] hover:shadow-lg ${isActive
-                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25'
+                  ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg shadow-red-500/25'
                   : 'text-gray-300 hover:bg-gray-700/50 hover:text-white'
                 }`
               }
@@ -144,7 +144,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     )}
                     <div className="flex-1">
                       <div className="font-medium">{link.name}</div>
-                      <div className={`text-xs transition-colors duration-200 ${isActive ? 'text-indigo-100' : 'text-gray-500 group-hover:text-gray-300'
+                      <div className={`text-xs transition-colors duration-200 ${isActive ? 'text-red-100' : 'text-gray-500 group-hover:text-gray-300'
                         }`}>
                         {link.description}
                       </div>
@@ -161,7 +161,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         {/* User Profile Section */}
         <div className="border-t border-gray-700 p-4">
           <div className="flex items-center space-x-3 p-3 rounded-xl bg-gray-800/50 mb-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-600 rounded-full flex items-center justify-center">
               <UserIcon className="h-6 w-6 text-white" />
             </div>
             <div className="flex-1 min-w-0">

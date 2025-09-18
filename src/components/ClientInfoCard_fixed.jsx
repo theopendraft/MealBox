@@ -27,7 +27,7 @@ export default function ClientInfoCard({ client, onClientUpdate }) {
                     </div>
                     <button
                         onClick={() => setIsEditModalOpen(true)}
-                        className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 text-sm font-medium"
+                        className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 text-sm font-medium"
                     >
                         Edit Details
                     </button>

@@ -24,7 +24,7 @@ export default function GeneratePDFButton({ bill, client }) {
 
   return (
     <>
-      <button onClick={handleDownload} className="text-blue-600 hover:text-blue-900">
+      <button onClick={handleDownload} className="text-red-600 hover:text-red-900">
         Download PDF
       </button>
       {/* This QR code is rendered but hidden, just so we can get its image data */}

@@ -35,7 +35,7 @@ const ForgotPassword = ({ onClose }) => {
             <Card className="max-w-md w-full animate-slide-up">
                 <CardHeader className="relative">
                     <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
-                        <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-600 rounded-lg flex items-center justify-center mr-3">
                             <EnvelopeIcon className="w-5 h-5 text-white" />
                         </div>
                         Reset Password
@@ -49,12 +49,12 @@ const ForgotPassword = ({ onClose }) => {
                 </CardHeader>
 
                 <CardContent className="space-y-6">
-                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                    <div className="bg-red-50 border border-red-200 rounded-xl p-4">
                         <div className="flex items-start">
-                            <svg className="w-5 h-5 text-blue-400 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <svg className="w-5 h-5 text-red-400 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                             </svg>
-                            <p className="text-blue-700 text-sm">
+                            <p className="text-red-700 text-sm">
                                 Enter your email address and we'll send you a secure link to reset your password.
                             </p>
                         </div>
@@ -72,12 +72,12 @@ const ForgotPassword = ({ onClose }) => {
                     )}
 
                     {success && (
-                        <div className="p-4 bg-green-50 border border-green-200 rounded-xl animate-slide-down">
+                        <div className="p-4 bg-orange-50 border border-orange-200 rounded-xl animate-slide-down">
                             <div className="flex items-center">
-                                <svg className="w-5 h-5 text-green-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <svg className="w-5 h-5 text-orange-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                 </svg>
-                                <p className="text-green-700 text-sm font-medium">{success}</p>
+                                <p className="text-orange-700 text-sm font-medium">{success}</p>
                             </div>
                         </div>
                     )}
@@ -88,7 +88,7 @@ const ForgotPassword = ({ onClose }) => {
                                 Email Address
                             </label>
                             <div className="relative group">
-                                <EnvelopeIcon className="h-5 w-5 text-gray-400 absolute left-3 top-3 transition-colors group-focus-within:text-indigo-500" />
+                                <EnvelopeIcon className="h-5 w-5 text-gray-400 absolute left-3 top-3 transition-colors group-focus-within:text-red-500" />
                                 <input
                                     type="email"
                                     value={email}

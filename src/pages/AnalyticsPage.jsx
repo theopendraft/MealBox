@@ -46,7 +46,7 @@ export default function AnalyticsPage() {
             </div>
 
             {/* Quick Analytics Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                 <StatsCard
                     title="Revenue Insights"
                     value="₹0"
@@ -85,9 +85,9 @@ export default function AnalyticsPage() {
             </div>
 
             {/* Business Performance Summary */}
-            <div>
+            {/* <div>
                 <BusinessSummary />
-            </div>
+            </div> */}
 
             {/* Revenue and Delivery Analytics */}
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">

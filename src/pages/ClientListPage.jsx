@@ -118,7 +118,7 @@ export default function ClientListPage() {
         <div className="flex gap-3">
           <Button
             onClick={() => handleOpenModal('subscribed')}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+            className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700"
           >
             <PlusIcon className="h-4 w-4 mr-2" />
             Add Subscriber
@@ -126,7 +126,7 @@ export default function ClientListPage() {
           <Button
             onClick={() => handleOpenModal('ondemand')}
             variant="outline"
-            className="border-blue-600 text-blue-600 hover:bg-blue-50"
+            className="border-red-600 text-red-600 hover:bg-red-50"
           >
             <PlusIcon className="h-4 w-4 mr-2" />
             Add On-Demand Client
@@ -171,7 +171,7 @@ export default function ClientListPage() {
             <button
               onClick={() => setActiveTab('subscribed')}
               className={`flex-1 py-4 px-6 text-center font-medium text-sm transition-all duration-200 ${activeTab === 'subscribed'
-                ? 'bg-indigo-600 text-white border-b-2 border-indigo-600'
+                ? 'bg-red-600 text-white border-b-2 border-red-600'
                 : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                 }`}
             >
@@ -190,7 +190,7 @@ export default function ClientListPage() {
             <button
               onClick={() => setActiveTab('ondemand')}
               className={`flex-1 py-4 px-6 text-center font-medium text-sm transition-all duration-200 ${activeTab === 'ondemand'
-                ? 'bg-blue-600 text-white border-b-2 border-blue-600'
+                ? 'bg-orange-600 text-white border-b-2 border-orange-600'
                 : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                 }`}
             >

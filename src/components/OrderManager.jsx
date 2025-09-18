@@ -97,7 +97,7 @@ export default function OrderManager({ client }) {
             <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" className="mt-1 w-full input-style" />
           </div>
         </div>
-        <button type="submit" disabled={isSaving} className="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:bg-blue-400">
+        <button type="submit" disabled={isSaving} className="w-full bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 disabled:bg-red-400">
           {isSaving ? 'Adding...' : '+ Add Tiffin Order'}
         </button>
       </form>

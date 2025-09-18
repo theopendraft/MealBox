@@ -61,7 +61,7 @@ export default function BillingHistoryCard({ client }) {
       <div className="mt-4">
         <Link
           to={`/clients/${client.id}/generate-bill`}
-          className="w-full block text-center bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
+          className="w-full block text-center bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
         >
           Prepare New Bill
         </Link>
@@ -74,7 +74,7 @@ export default function BillingHistoryCard({ client }) {
             <div key={bill.id} className="border-b pb-2">
               <Link to={`/bills/${bill.id}`} className="block hover:bg-gray-50 p-2 rounded transition-colors">
                 <div className="flex justify-between items-center">
-                  <p className="font-medium text-indigo-600 hover:text-indigo-800">
+                  <p className="font-medium text-red-600 hover:text-red-800">
                     {bill.billingMonth ? `Bill for ${bill.billingMonth}` : `Bill: ${bill.billingPeriod?.start} to ${bill.billingPeriod?.end}`}
                   </p>
                   <p className="font-bold">₹{bill.finalAmount}</p>
@@ -83,7 +83,7 @@ export default function BillingHistoryCard({ client }) {
                   <p className="text-gray-500">
                     {bill.generatedAt ? new Date(bill.generatedAt.toDate()).toLocaleDateString('en-IN') : 'N/A'}
                   </p>
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${bill.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${bill.status === 'paid' ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800'
                     }`}
                   >
                     {bill.status}

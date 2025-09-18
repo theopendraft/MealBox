@@ -19,11 +19,11 @@ export default function ClientInfoCard({ client, onClientUpdate }) {
 
   return (
     <>
-      <Card className="border-l-4 border-l-indigo-500 hover:shadow-lg transition-shadow duration-300">
+      <Card className="border-l-4 border-l-red-500 hover:shadow-lg transition-shadow duration-300">
         <CardHeader>
           <div className="flex justify-between items-start">
             <div className="flex-1">
-              <CardTitle className="text-indigo-700 text-2xl mb-2">
+              <CardTitle className="text-red-700 text-2xl mb-2">
                 {client.name}
               </CardTitle>
               <div className="space-y-1">
@@ -50,7 +50,7 @@ export default function ClientInfoCard({ client, onClientUpdate }) {
             <Button
               onClick={() => setIsEditModalOpen(true)}
               variant="outline"
-              className="p-2 border-indigo-200 text-indigo-600 hover:bg-indigo-50"
+              className="p-2 border-red-200 text-red-600 hover:bg-red-50"
               title="Edit Client Details"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -64,7 +64,7 @@ export default function ClientInfoCard({ client, onClientUpdate }) {
           {/* Customer Type Badge */}
           <div className="mb-4">
             <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${client.customerType === 'subscribed'
-                ? 'bg-blue-100 text-blue-800'
+                ? 'bg-red-100 text-red-800'
                 : 'bg-orange-100 text-orange-800'
               }`}>
               {client.customerType === 'subscribed' ? '📅 Subscription' : '⚡ On-Demand'}
@@ -97,32 +97,32 @@ export default function ClientInfoCard({ client, onClientUpdate }) {
               </>
             ) : (
               <>
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                  <h3 className="font-semibold text-blue-800 mb-2">Subscription Period</h3>
+                <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+                  <h3 className="font-semibold text-red-800 mb-2">Subscription Period</h3>
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-blue-600">Start:</span>
+                      <span className="text-red-600">Start:</span>
                       <span className="font-medium">{client.plan?.startDate || 'N/A'}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-blue-600">End:</span>
+                      <span className="text-red-600">End:</span>
                       <span className="font-medium">{client.plan?.endDate || 'Ongoing'}</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                  <h3 className="font-semibold text-green-800 mb-2">Meal Plan</h3>
+                <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                  <h3 className="font-semibold text-orange-800 mb-2">Meal Plan</h3>
                   <div className="space-y-1 text-sm">
                     {client.plan?.lunch?.subscribed && (
                       <div className="flex justify-between">
-                        <span className="text-green-600">🍛 Lunch:</span>
+                        <span className="text-orange-600">🍛 Lunch:</span>
                         <span className="font-bold">₹{client.plan.lunch.price}</span>
                       </div>
                     )}
                     {client.plan?.dinner?.subscribed && (
                       <div className="flex justify-between">
-                        <span className="text-green-600">🍽️ Dinner:</span>
+                        <span className="text-orange-600">🍽️ Dinner:</span>
                         <span className="font-bold">₹{client.plan.dinner.price}</span>
                       </div>
                     )}

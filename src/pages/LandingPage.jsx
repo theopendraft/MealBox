@@ -19,130 +19,154 @@ const LandingPage = () => {
     const [activeTab, setActiveTab] = useState(0);
     const [openFAQ, setOpenFAQ] = useState(null);
 
-    // Hero section with compelling copy
+    // Hero section with clean, modern design inspired by Zomato/Swiggy
     const HeroSection = () => (
-        <section className="relative bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 text-white overflow-hidden">
-            {/* Background animation */}
-            <div className="absolute inset-0">
-                <div className="absolute inset-0 bg-black/20"></div>
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 animate-pulse"></div>
-            </div>
+        <section className="relative bg-white overflow-hidden pt-16">
+            {/* Subtle background pattern */}
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-white"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(239,68,68,0.1),transparent)]"></div>
 
-            {/* Floating elements */}
-            <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full opacity-20 animate-bounce"></div>
-            <div className="absolute top-40 right-20 w-16 h-16 bg-gradient-to-r from-pink-400 to-red-500 rounded-full opacity-20 animate-bounce" style={{ animationDelay: '1s' }}></div>
-            <div className="absolute bottom-20 left-20 w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full opacity-20 animate-bounce" style={{ animationDelay: '2s' }}></div>
+            {/* Clean geometric elements */}
+            <div className="absolute top-20 right-10 w-64 h-64 bg-red-50 rounded-full opacity-30 blur-3xl"></div>
+            <div className="absolute bottom-40 left-10 w-48 h-48 bg-orange-50 rounded-full opacity-40 blur-2xl"></div>
 
-            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 lg:py-48">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                     {/* Hero Content */}
                     <div className="text-center lg:text-left">
-                        <div className="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6 animate-fade-in">
-                            <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-                            #1 Tiffin Management Platform in India
+                        {/* Trust badge */}
+                        <div className="inline-flex items-center px-4 py-2 bg-red-50 border border-red-100 rounded-full text-sm font-medium text-red-700 mb-8">
+                            <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
+                            Trusted by 1000+ tiffin businesses
                         </div>
 
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 animate-slide-in-left">
-                            Transform Your
-                            <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent"> Tiffin Business </span>
-                             into a Digital Empire
+                        {/* Main headline */}
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
+                            Grow Your
+                            <span className="text-red-600"> Tiffin Business </span>
+                            Effortlessly
                         </h1>
 
-                        <p className="text-xl lg:text-xl text-gray-200 mb-8 leading-relaxed animate-slide-in-left" style={{ animationDelay: '0.2s' }}>
-                            Scale your tiffin service with our all-in-one management platform.
+                        {/* Subheadline */}
+                        <p className="text-xl text-gray-600 mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
+                            The complete platform to manage orders, customers, deliveries, and payments.
+                            Built for modern tiffin services.
                         </p>
 
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-slide-in-left" style={{ animationDelay: '0.4s' }}>
-                            {/* <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-black font-bold px-8 py-4 text-lg shadow-2xl transform hover:scale-105 transition-all duration-300"
-              >
-                Start Free Trial
-                <ChevronRightIcon className="w-5 h-5 ml-2" />
-              </Button> */}
-
+                        {/* CTA buttons */}
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
                             <Link
                                 to="/auth"
-                                size="lg"
-                                className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-black font-bold px-8 py-4 text-lg shadow-2xl transform hover:scale-105 transition-all duration-300 items-center justify-center inline-flex align-middle rounded-md"
+                                className="inline-flex items-center justify-center px-8 py-4 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-colors duration-200 shadow-lg shadow-red-600/25"
                             >
-
-                                Get Started
+                                Start Free Trial
                                 <ChevronRightIcon className="w-5 h-5 ml-2" />
                             </Link>
-
 
                             <Button
                                 variant="outline"
                                 size="lg"
-                                className="border-white/30 text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm px-8 py-4 text-lg"
+                                className="border-gray-300 text-gray-700 bg-white hover:bg-gray-50 px-8 py-4 rounded-xl"
                             >
                                 <PlayIcon className="w-5 h-5 mr-2" />
                                 Watch Demo
                             </Button>
                         </div>
 
-                        {/* Trust indicators */}
-                        {/* <div className="mt-12 animate-fade-in" style={{ animationDelay: '0.6s' }}>
-              <p className="text-sm text-gray-300 mb-4">Trusted by leading tiffin services across India</p>
-              <div className="flex items-center justify-center lg:justify-start space-x-8">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-yellow-400">1000+</div>
-                  <div className="text-xs text-gray-300">Active Businesses</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-400">50k+</div>
-                  <div className="text-xs text-gray-300">Daily Orders</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-400">₹10Cr+</div>
-                  <div className="text-xs text-gray-300">Revenue Processed</div>
-                </div>
-              </div>
-            </div> */}
+                        {/* Social proof stats */}
+                        {/* <div className="flex items-center justify-center lg:justify-start space-x-8 text-sm text-gray-500">
+                            <div className="text-center">
+                                <div className="text-2xl font-bold text-gray-900">₹10Cr+</div>
+                                <div>Revenue processed</div>
+                            </div>
+                            <div className="text-center">
+                                <div className="text-2xl font-bold text-gray-900">50k+</div>
+                                <div>Daily orders</div>
+                            </div>
+                            <div className="text-center">
+                                <div className="text-2xl font-bold text-gray-900">99.9%</div>
+                                <div>Uptime</div>
+                            </div>
+                        </div> */}
                     </div>
 
-                    {/* Hero Image/Animation */}
-                    <div className="relative animate-slide-in-right">
-                        <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-3xl p-8 shadow-2xl">
-                            {/* Dashboard Preview */}
-                            <div className="bg-white rounded-2xl p-6 shadow-xl">
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className="flex items-center space-x-2">
-                                        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                                        <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                                    </div>
-                                    <div className="text-sm text-gray-500">TiffinAdmin Dashboard</div>
+                    {/* Modern dashboard preview */}
+                    <div className="relative">
+                        {/* Main dashboard container */}
+                        <div className="relative bg-white rounded-2xl shadow-2xl shadow-gray-900/10 border border-gray-200 overflow-hidden">
+                            {/* Browser header */}
+                            <div className="flex items-center justify-between px-6 py-4 bg-gray-50 border-b border-gray-200">
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                                    <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                                 </div>
-
-                                {/* Mock dashboard content */}
-                                <div className="space-y-4">
-                                    <div className="grid grid-cols-3 gap-4">
-                                        <div className="bg-gradient-to-r from-green-400 to-green-600 text-white p-3 rounded-lg">
-                                            <div className="text-xs opacity-80">Today's Revenue</div>
-                                            <div className="text-lg font-bold">₹45,680</div>
-                                        </div>
-                                        <div className="bg-gradient-to-r from-blue-400 to-blue-600 text-white p-3 rounded-lg">
-                                            <div className="text-xs opacity-80">Active Orders</div>
-                                            <div className="text-lg font-bold">127</div>
-                                        </div>
-                                        <div className="bg-gradient-to-r from-purple-400 to-purple-600 text-white p-3 rounded-lg">
-                                            <div className="text-xs opacity-80">New Clients</div>
-                                            <div className="text-lg font-bold">8</div>
-                                        </div>
-                                    </div>
-
-                                    <div className="h-32 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg flex items-center justify-center">
-                                        <div className="text-gray-500 text-sm">📊 Analytics Dashboard</div>
-                                    </div>
-                                </div>
+                                <div className="text-sm font-medium text-gray-600">MealBox Dashboard</div>
                             </div>
 
-                            {/* Floating notification */}
-                            <div className="absolute -right-4 top-20 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg animate-bounce">
-                                <div className="text-xs">New Order! 🍛</div>
-                                <div className="text-sm font-bold">Rajesh Kumar</div>
+                            {/* Dashboard content */}
+                            <div className="p-6 space-y-6">
+                                {/* Stats cards matching your StatsCard design */}
+                                <div className="grid grid-cols-3 gap-4">
+                                    <div className="bg-white border border-gray-100 rounded-xl p-4 hover:shadow-md transition-shadow">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-xs font-medium text-gray-600 uppercase">Revenue</span>
+                                            <div className="w-2 h-8 bg-gradient-to-b from-red-500 to-orange-500 rounded-full"></div>
+                                        </div>
+                                        <div className="text-xl font-bold text-gray-900">₹45,680</div>
+                                        <div className="text-xs text-emerald-600 flex items-center mt-1">
+                                            ↗ +12% vs last month
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-white border border-gray-100 rounded-xl p-4 hover:shadow-md transition-shadow">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-xs font-medium text-gray-600 uppercase">Orders</span>
+                                            <div className="w-2 h-8 bg-gradient-to-b from-gray-300 to-gray-400 rounded-full"></div>
+                                        </div>
+                                        <div className="text-xl font-bold text-gray-900">127</div>
+                                        <div className="text-xs text-emerald-600 flex items-center mt-1">
+                                            ↗ +8% vs yesterday
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-white border border-gray-100 rounded-xl p-4 hover:shadow-md transition-shadow">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-xs font-medium text-gray-600 uppercase">Clients</span>
+                                            <div className="w-2 h-8 bg-gradient-to-b from-gray-300 to-gray-400 rounded-full"></div>
+                                        </div>
+                                        <div className="text-xl font-bold text-gray-900">8</div>
+                                        <div className="text-xs text-emerald-600 flex items-center mt-1">
+                                            ↗ New today
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Chart area */}
+                                <div className="bg-gray-50 rounded-xl p-6 h-24 flex items-center justify-center">
+                                    <div className="text-gray-500 text-sm font-medium">📈 Live Analytics Dashboard</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Floating notification */}
+                        <div className="absolute -right-4 top-24 bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-xl">
+                            <div className="flex items-center space-x-3">
+                                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                    <span className="text-green-600 text-sm">🍽️</span>
+                                </div>
+                                <div>
+                                    <div className="text-sm font-semibold text-gray-900">New Order</div>
+                                    <div className="text-xs text-gray-600">Rajesh Kumar • ₹180</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Floating stats */}
+                        <div className="absolute -left-4 bottom-24 bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-xl">
+                            <div className="flex items-center space-x-2">
+                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                <div className="text-sm font-medium text-gray-900">All systems operational</div>
                             </div>
                         </div>
                     </div>
@@ -206,17 +230,17 @@ const LandingPage = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {features.map((feature, index) => (
-                            <Card key={index} className="h-full hover:shadow-xl transition-shadow duration-300 group cursor-pointer transform hover:-translate-y-2" hover>
+                            <Card key={index} className="h-full hover:shadow-xl transition-all duration-300 group cursor-pointer transform hover:-translate-y-2 border border-gray-200 hover:border-red-200" hover>
                                 <CardContent className="p-8">
-                                    <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                                    <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-orange-500 rounded-xl flex items-center justify-center text-white text-xl mb-4 group-hover:scale-110 transition-transform duration-300">
                                         {feature.icon}
                                     </div>
-                                    <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
+                                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-red-600 transition-colors">{feature.title}</h3>
                                     <p className="text-gray-600 mb-4">{feature.description}</p>
                                     <ul className="space-y-2">
                                         {feature.benefits.map((benefit, idx) => (
                                             <li key={idx} className="flex items-center text-sm text-gray-500">
-                                                <CheckIcon className="w-4 h-4 text-green-500 mr-2" />
+                                                <CheckIcon className="w-4 h-4 text-red-500 mr-2" />
                                                 {benefit}
                                             </li>
                                         ))}
@@ -260,25 +284,25 @@ const LandingPage = () => {
         ];
 
         return (
-            <section className="py-20 bg-gradient-to-r from-indigo-50 to-purple-50">
+            <section className="py-20 bg-gradient-to-br from-red-50 to-orange-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                             Loved by 1000+ Tiffin Business Owners
                         </h2>
                         <p className="text-xl text-gray-600">
-                            See how TiffinAdmin helped these businesses achieve remarkable growth
+                            See how MealBox helped these businesses achieve remarkable growth
                         </p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {testimonials.map((testimonial, index) => (
-                            <Card key={index} className="relative bg-white border-2 border-transparent hover:border-indigo-200 transition-all duration-300 transform hover:-translate-y-2" hover>
+                            <Card key={index} className="relative bg-white border-2 border-transparent hover:border-red-200 transition-all duration-300 transform hover:-translate-y-2" hover>
                                 <CardContent className="p-8">
                                     {/* Rating */}
                                     <div className="flex items-center mb-4">
                                         {[...Array(testimonial.rating)].map((_, i) => (
-                                            <StarIcon key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                                            <StarIcon key={i} className="w-5 h-5 text-orange-400 fill-current" />
                                         ))}
                                     </div>
 
@@ -288,10 +312,10 @@ const LandingPage = () => {
                                     </blockquote>
 
                                     {/* Metrics */}
-                                    <div className="grid grid-cols-3 gap-2 mb-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg">
+                                    <div className="grid grid-cols-3 gap-2 mb-6 p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-lg border border-red-100">
                                         {Object.entries(testimonial.metrics).map(([key, value], idx) => (
                                             <div key={idx} className="text-center">
-                                                <div className="text-sm font-bold text-indigo-600">{value}</div>
+                                                <div className="text-sm font-bold text-red-600">{value}</div>
                                                 <div className="text-xs text-gray-500 capitalize">{key}</div>
                                             </div>
                                         ))}
@@ -299,7 +323,7 @@ const LandingPage = () => {
 
                                     {/* Author */}
                                     <div className="flex items-center">
-                                        <div className="text-3xl mr-4">{testimonial.image}</div>
+                                        <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center text-white text-lg mr-4">{testimonial.image}</div>
                                         <div>
                                             <div className="font-semibold text-gray-900">{testimonial.name}</div>
                                             <div className="text-sm text-gray-500">{testimonial.business}</div>
@@ -384,18 +408,18 @@ const LandingPage = () => {
                         </p>
 
                         {/* Pricing toggle - can add monthly/yearly later */}
-                        <div className="inline-flex items-center bg-gray-100 rounded-lg p-1">
-                            <span className="px-4 py-2 bg-white rounded-md shadow-sm text-sm font-medium text-gray-900">Monthly</span>
+                        <div className="inline-flex items-center bg-red-50 border border-red-100 rounded-lg p-1">
+                            <span className="px-4 py-2 bg-white rounded-md shadow-sm text-sm font-medium text-red-600 border border-red-200">Monthly</span>
                             <span className="px-4 py-2 text-sm text-gray-500">Yearly (Save 20%)</span>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {plans.map((plan, index) => (
-                            <Card key={index} className={`relative h-full ${plan.popular ? 'border-2 border-indigo-500 shadow-2xl transform scale-105' : 'border border-gray-200'}`}>
+                            <Card key={index} className={`relative h-full ${plan.popular ? 'border-2 border-red-500 shadow-2xl transform scale-105' : 'border border-gray-200'}`}>
                                 {plan.popular && (
                                     <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                                        <span className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-bold">
+                                        <span className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-bold">
                                             Most Popular
                                         </span>
                                     </div>
@@ -414,7 +438,7 @@ const LandingPage = () => {
                                     <ul className="space-y-4 mb-8">
                                         {plan.features.map((feature, idx) => (
                                             <li key={idx} className="flex items-start">
-                                                <CheckIcon className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                                                <CheckIcon className="w-5 h-5 text-red-500 mr-3 mt-0.5 flex-shrink-0" />
                                                 <span className="text-gray-700">{feature}</span>
                                             </li>
                                         ))}
@@ -422,7 +446,7 @@ const LandingPage = () => {
 
                                     <Button
                                         className={`w-full py-3 ${plan.popular
-                                            ? 'bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700'
+                                            ? 'bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600'
                                             : 'bg-gray-900 hover:bg-gray-800'
                                             } text-white font-semibold`}
                                     >
@@ -439,15 +463,15 @@ const LandingPage = () => {
                         </p>
                         <div className="flex items-center justify-center space-x-8 text-sm text-gray-500">
                             <span className="flex items-center">
-                                <CheckIcon className="w-4 h-4 text-green-500 mr-2" />
+                                <CheckIcon className="w-4 h-4 text-red-500 mr-2" />
                                 No setup fees
                             </span>
                             <span className="flex items-center">
-                                <CheckIcon className="w-4 h-4 text-green-500 mr-2" />
+                                <CheckIcon className="w-4 h-4 text-red-500 mr-2" />
                                 Cancel anytime
                             </span>
                             <span className="flex items-center">
-                                <CheckIcon className="w-4 h-4 text-green-500 mr-2" />
+                                <CheckIcon className="w-4 h-4 text-red-500 mr-2" />
                                 24/7 support
                             </span>
                         </div>
@@ -494,22 +518,22 @@ const LandingPage = () => {
                             Frequently Asked Questions
                         </h2>
                         <p className="text-xl text-gray-600">
-                            Everything you need to know about TiffinAdmin
+                            Everything you need to know about MealBox
                         </p>
                     </div>
 
                     <div className="space-y-4">
                         {faqs.map((faq, index) => (
-                            <Card key={index} className="border border-gray-200">
+                            <Card key={index} className="border border-gray-200 hover:border-red-200 transition-colors">
                                 <CardContent className="p-0">
                                     <button
                                         onClick={() => setOpenFAQ(openFAQ === index ? null : index)}
-                                        className="w-full text-left p-6 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-lg"
+                                        className="w-full text-left p-6 focus:outline-none focus:ring-2 focus:ring-red-500 rounded-lg"
                                     >
                                         <div className="flex items-center justify-between">
                                             <h3 className="text-lg font-semibold text-gray-900">{faq.question}</h3>
                                             <ChevronDownIcon
-                                                className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${openFAQ === index ? 'transform rotate-180' : ''
+                                                className={`w-5 h-5 text-red-500 transition-transform duration-200 ${openFAQ === index ? 'transform rotate-180' : ''
                                                     }`}
                                             />
                                         </div>
@@ -526,7 +550,7 @@ const LandingPage = () => {
 
                     <div className="text-center mt-12">
                         <p className="text-gray-600 mb-4">Still have questions?</p>
-                        <Button className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                        <Button className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white">
                             Contact Our Support Team
                         </Button>
                     </div>
@@ -636,18 +660,16 @@ const LandingPage = () => {
                     <div className="hidden md:flex items-center space-x-4">
                         <Link
                             to="/auth"
-                            className="text-gray-700 hover:text-indigo-600 transition-colors font-medium"
+                            className="text-gray-700 hover:text-red-600 transition-colors font-medium"
                         >
                             Sign In
                         </Link>
-                        <Link 
-                        to="/auth"
-                        className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-2 px-3 rounded-md">
+                        <Link
+                            to="/auth"
+                            className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white py-2 px-3 rounded-md">
                             Try For Free
                         </Link>
-                    </div>
-
-                    {/* Mobile menu button */}
+                    </div>                    {/* Mobile menu button */}
                     <div className="md:hidden">
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -668,7 +690,7 @@ const LandingPage = () => {
                                 <a
                                     key={item}
                                     href={`#${item.toLowerCase()}`}
-                                    className="block px-3 py-2 text-gray-700 hover:text-indigo-600 transition-colors"
+                                    className="block px-3 py-2 text-gray-700 hover:text-red-600 transition-colors"
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     {item}
@@ -681,7 +703,7 @@ const LandingPage = () => {
                                 >
                                     Sign In
                                 </Link>
-                                <Button className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                                <Button className="w-full bg-gradient-to-r from-red-600 to-orange-600 text-white">
                                     Start Free Trial
                                 </Button>
                             </div>

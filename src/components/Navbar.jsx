@@ -96,8 +96,8 @@ export default function Navbar({ setSidebarOpen }) {
                 <Link
                   to={crumb.path}
                   className={`flex items-center space-x-1 px-2 py-1 rounded-md transition-colors duration-200 ${index === breadcrumbs.length - 1
-                    ? 'text-indigo-600 bg-indigo-50 font-medium'
-                    : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50'
+                    ? 'text-red-600 bg-red-50 font-medium'
+                    : 'text-gray-600 hover:text-red-600 hover:bg-gray-50'
                     }`}
                 >
                   {crumb.icon && <crumb.icon className="h-4 w-4" />}
@@ -119,7 +119,7 @@ export default function Navbar({ setSidebarOpen }) {
               placeholder="Search clients, deliveries, bills..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="block w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50 transition-all duration-200 hover:bg-white focus:bg-white"
+              className="block w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-gray-50 transition-all duration-200 hover:bg-white focus:bg-white"
             />
             {searchQuery && (
               <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
@@ -142,7 +142,7 @@ export default function Navbar({ setSidebarOpen }) {
             {isDark ? (
               <SunIcon className="h-5 w-5 text-gray-600 group-hover:text-yellow-500 transition-colors duration-200" />
             ) : (
-              <MoonIcon className="h-5 w-5 text-gray-600 group-hover:text-indigo-600 transition-colors duration-200" />
+              <MoonIcon className="h-5 w-5 text-gray-600 group-hover:text-red-600 transition-colors duration-200" />
             )}
           </button> */}
 
@@ -162,7 +162,7 @@ export default function Navbar({ setSidebarOpen }) {
               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
               className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-all duration-200 group"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-orange-600 rounded-full flex items-center justify-center">
                 <UserIcon className="h-5 w-5 text-white" />
               </div>
               <div className="hidden md:block text-left">
@@ -185,7 +185,7 @@ export default function Navbar({ setSidebarOpen }) {
               {/* User Info */}
               <div className="px-4 py-3 border-b border-gray-100">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-600 rounded-full flex items-center justify-center">
                     <UserIcon className="h-6 w-6 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">

@@ -76,7 +76,7 @@ export default function DailyDeliveryPage() {
       <h1 className="text-3xl font-bold mb-2">Daily Delivery List</h1>
       <p className="text-gray-600 mb-6">Date: {new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
 
-      <div className="bg-indigo-600 text-white rounded-lg shadow-lg p-6 mb-8">
+      <div className="bg-red-600 text-white rounded-lg shadow-lg p-6 mb-8">
         <h2 className="text-4xl font-extrabold">{deliveryList.length}</h2>
         <p className="font-medium">Total Tiffins to be Delivered Today</p>
       </div>
@@ -90,7 +90,7 @@ export default function DailyDeliveryPage() {
                 <h3 className="text-lg font-semibold">{client.name}</h3>
                 <p className="text-gray-600">{client.address}</p>
                 <p className="text-sm text-gray-500 mt-1"><strong>Phone:</strong> {client.phone}</p>
-                <p className="text-sm text-blue-600 font-medium mt-1">
+                <p className="text-sm text-red-600 font-medium mt-1">
                   <strong>Preferences:</strong> {client.preferences.rotiCount} Roti
                 </p>
               </div>

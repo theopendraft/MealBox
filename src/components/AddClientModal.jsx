@@ -188,17 +188,17 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-2 sm:p-4 animate-fade-in">
-      <div className="w-full max-w-4xl max-h-[98vh] sm:max-h-[95vh] animate-slide-up sm:animate-scale-in">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-start sm:items-center  justify-center m-0 p-2 sm:p-4 animate-fade-in">
+      <div className=" w-full max-w-4xl max-h-[98vh] sm:max-h-[95vh] mt-8 mb-4  animate-slide-up sm:animate-scale-in">
         <Card className="overflow-hidden rounded-t-2xl sm:rounded-2xl">
           {/* Mobile-Optimized Header */}
-          <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-4 sm:p-6 grid grid-cols-1 ">
+          <CardHeader className="bg-gradient-to-r from-red-500 to-orange-600 text-white p-4 sm:p-6 grid grid-cols-1 ">
             <div className="flex items-center justify-between">
               <div className="flex-1 min-w-0">
                 <CardTitle className="text-white text-lg sm:text-2xl font-bold truncate">
                   {mode === 'edit' ? 'Edit Client' : (isSubscribed ? 'Add New Subscriber' : 'Add On-Demand Client')}
                 </CardTitle>
-                <p className="text-indigo-100 mt-1 text-sm sm:text-base truncate">
+                <p className="text-red-100 mt-1 text-sm sm:text-base truncate">
                   {mode === 'edit' ? 'Update client information' : `Create a new ${isSubscribed ? 'subscription' : 'on-demand'} client`}
                 </p>
               </div>
@@ -224,16 +224,16 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                       flex items-center justify-center w-10 h-10 rounded-full font-semibold text-sm
                       transition-all duration-300
                       ${step === idx
-                        ? 'bg-white text-indigo-600 shadow-lg scale-110'
+                        ? 'bg-white text-red-600 shadow-lg scale-110'
                         : step > idx
-                          ? 'bg-indigo-300 text-indigo-700'
-                          : 'bg-indigo-400/50 text-indigo-200'
+                          ? 'bg-red-300 text-red-700'
+                          : 'bg-red-400/50 text-red-200'
                       }
                     `}>
                       {step > idx ? '✓' : idx + 1}
                     </div>
                     {idx < stepTitles.length - 1 && (
-                      <div className={`w-12 h-1 mx-2 rounded transition-colors duration-300 ${step > idx ? 'bg-indigo-300' : 'bg-indigo-400/50'
+                      <div className={`w-12 h-1 mx-2 rounded transition-colors duration-300 ${step > idx ? 'bg-red-300' : 'bg-red-400/50'
                         }`} />
                     )}
                   </div>
@@ -243,10 +243,10 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
               {/* Mobile Progress Bar */}
               <div className="sm:hidden">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-indigo-100 text-sm">Step {step + 1} of {stepTitles.length}</span>
-                  <span className="text-indigo-100 text-sm">{Math.round(((step + 1) / stepTitles.length) * 100)}%</span>
+                  <span className="text-red-100 text-sm">Step {step + 1} of {stepTitles.length}</span>
+                  <span className="text-red-100 text-sm">{Math.round(((step + 1) / stepTitles.length) * 100)}%</span>
                 </div>
-                <div className="w-full bg-indigo-400/50 rounded-full h-2">
+                <div className="w-full bg-red-400/50 rounded-full h-2">
                   <div
                     className="bg-white h-2 rounded-full transition-all duration-300"
                     style={{ width: `${((step + 1) / stepTitles.length) * 100}%` }}
@@ -269,8 +269,8 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                 {/* Step 1: Personal Details */}
                 {step === 0 && (
                   <div className="animate-slide-in-right">
-                    <Card className="border-l-4 border-l-indigo-500">
-                      <CardContent className="p-4 sm:p-6">
+                    <Card className="border-l-4 border-l-red-500">
+                      <CardContent className="p-0 sm:p-6">
                         <div className="grid grid-cols-1 gap-4 sm:gap-6">
                           <div>
                             <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
@@ -283,7 +283,7 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                               required
                               value={formData.name}
                               onChange={handleChange}
-                              className="w-full px-3 py-3 sm:px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors text-base"
+                              className="w-full px-3 py-3 sm:px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors text-base"
                               placeholder="Enter full name"
                             />
                           </div>
@@ -300,7 +300,7 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                                 required
                                 value={formData.phone}
                                 onChange={handleChange}
-                                className="w-full px-3 py-3 sm:px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors text-base"
+                                className="w-full px-3 py-3 sm:px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors text-base"
                                 placeholder="Enter phone number"
                               />
                             </div>
@@ -314,7 +314,7 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                                 id="deliveryTimePreference"
                                 value={formData.deliveryTimePreference}
                                 onChange={handleChange}
-                                className="w-full px-3 py-3 sm:px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors text-base"
+                                className="w-full px-3 py-3 sm:px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors text-base"
                               >
                                 <option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
                                 <option value="01:00 PM - 02:00 PM">01:00 PM - 02:00 PM</option>
@@ -335,7 +335,7 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                               value={formData.address}
                               onChange={handleChange}
                               rows={3}
-                              className="w-full px-3 py-3 sm:px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors resize-none text-base"
+                              className="w-full px-3 py-3 sm:px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors resize-none text-base"
                               placeholder="Enter complete delivery address"
                             />
                           </div>

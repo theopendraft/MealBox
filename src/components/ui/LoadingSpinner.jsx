@@ -43,7 +43,7 @@ export const LoadingSkeleton = ({ className = '', children, loading = true }) =>
 export const PageLoader = () => (
     <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-            <LoadingSpinner size="xl" className="text-indigo-600 mx-auto mb-4" />
+            <LoadingSpinner size="xl" className="text-red-600 mx-auto mb-4" />
             <p className="text-gray-600">Loading...</p>
         </div>
     </div>

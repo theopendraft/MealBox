@@ -17,7 +17,7 @@ const generateCalendarEvents = (client, pauses, orders) => {
     // First, add the main on-demand order from client.plan
     if (client.plan?.date && client.plan?.mealType) {
       const mainEventTitle = `Main: ${client.plan.mealType.charAt(0).toUpperCase() + client.plan.mealType.slice(1)}`;
-      events.push({ title: mainEventTitle, start: client.plan.date, color: '#10B981', allDay: true });
+      events.push({ title: mainEventTitle, start: client.plan.date, color: '#EA580C', allDay: true });
     }
 
     // Then, add all single tiffin orders
@@ -25,7 +25,7 @@ const generateCalendarEvents = (client, pauses, orders) => {
       orders.forEach(order => {
         if (order.orderDate && order.mealType) {
           const eventTitle = `Extra: ${order.mealType.charAt(0).toUpperCase() + order.mealType.slice(1)}`;
-          events.push({ title: eventTitle, start: order.orderDate, color: '#4F46E5', allDay: true });
+          events.push({ title: eventTitle, start: order.orderDate, color: '#DC2626', allDay: true });
         }
       });
     }
@@ -44,7 +44,7 @@ const generateCalendarEvents = (client, pauses, orders) => {
     const dateStr = current.toISOString().split('T')[0];
     const dayName = dayNames[current.getDay()];
     if (client.deliverySchedule[dayName]) {
-      events.push({ title: 'Delivered', start: dateStr, color: '#10B981', allDay: true });
+      events.push({ title: 'Delivered', start: dateStr, color: '#EA580C', allDay: true });
     } else {
       events.push({ title: 'Skipped', start: dateStr, color: '#6B7280', display: 'background' });
     }
@@ -71,9 +71,9 @@ const generateCalendarEvents = (client, pauses, orders) => {
       const eventIndex = events.findIndex(e => e.start === dateStr);
       const eventTitle = `Single ${order.mealType ? order.mealType.charAt(0).toUpperCase() + order.mealType.slice(1) : ''}`;
       if (eventIndex !== -1) {
-        events[eventIndex] = { ...events[eventIndex], title: `${events[eventIndex].title} + Extra`, color: '#4F46E5' };
+        events[eventIndex] = { ...events[eventIndex], title: `${events[eventIndex].title} + Extra`, color: '#DC2626' };
       } else {
-        events.push({ title: eventTitle, start: dateStr, color: '#4F46E5', allDay: true });
+        events.push({ title: eventTitle, start: dateStr, color: '#DC2626', allDay: true });
       }
     });
   }
@@ -196,7 +196,7 @@ export default function PauseManager({ client }) {
               <option value="dinner">Dinner Only</option>
             </select>
           </div>
-          <button type="submit" className="w-full bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600">Add Pause Period</button>
+          <button type="submit" className="w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Add Pause Period</button>
         </form>
       </div>
       <div className="bg-white shadow-md rounded-lg p-6">

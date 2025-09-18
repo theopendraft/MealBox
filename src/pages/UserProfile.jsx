@@ -69,7 +69,7 @@ const UserProfile = () => {
         <div className="max-w-6xl mx-auto py-8 px-4 animate-fade-in">
             {/* Header Card */}
             <Card className="overflow-hidden mb-8">
-                <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-12 text-white">
+                <div className="bg-gradient-to-r from-red-600 to-orange-600 px-8 py-12 text-white">
                     <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
                         <div className="relative">
                             {currentUser?.photoURL ? (
@@ -95,7 +95,7 @@ const UserProfile = () => {
                             <h1 className="text-4xl font-bold mb-2">
                                 {currentUser?.displayName || 'User Profile'}
                             </h1>
-                            <p className="text-xl text-indigo-100 mb-4">
+                            <p className="text-xl text-red-100 mb-4">
                                 {currentUser?.email || currentUser?.phoneNumber}
                             </p>
                             <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start space-y-2 sm:space-y-0 sm:space-x-6">
@@ -105,7 +105,7 @@ const UserProfile = () => {
                                         {currentUser?.emailVerified ? 'Verified Account' : 'Unverified Account'}
                                     </span>
                                 </div>
-                                <div className="flex items-center text-indigo-200">
+                                <div className="flex items-center text-red-200">
                                     <CalendarIcon className="w-5 h-5 mr-2" />
                                     <span className="text-sm">
                                         Member since {formatDate(currentUser?.metadata?.creationTime)}
@@ -151,9 +151,9 @@ const UserProfile = () => {
 
             {/* Password Change Modal */}
             {showPasswordChange && (
-                <Card className="mb-8 border-l-4 border-l-blue-500">
+                <Card className="mb-8 border-l-4 border-l-red-500">
                     <CardHeader>
-                        <CardTitle className="text-blue-700 flex items-center">
+                        <CardTitle className="text-red-700 flex items-center">
                             <KeyIcon className="w-5 h-5 mr-2" />
                             Change Password
                         </CardTitle>
@@ -166,9 +166,9 @@ const UserProfile = () => {
 
             <div className="grid lg:grid-cols-2 gap-8">
                 {/* Account Information */}
-                <Card className="border-l-4 border-l-indigo-500">
+                <Card className="border-l-4 border-l-red-500">
                     <CardHeader>
-                        <CardTitle className="text-indigo-700 flex items-center">
+                        <CardTitle className="text-red-700 flex items-center">
                             <UserCircleIcon className="w-5 h-5 mr-2" />
                             Account Information
                         </CardTitle>
@@ -177,8 +177,8 @@ const UserProfile = () => {
                         <div className="space-y-4">
                             {currentUser?.email && (
                                 <div className="flex items-start space-x-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-                                    <div className="bg-indigo-100 p-2 rounded-lg">
-                                        <EnvelopeIcon className="w-5 h-5 text-indigo-600" />
+                                    <div className="bg-red-100 p-2 rounded-lg">
+                                        <EnvelopeIcon className="w-5 h-5 text-red-600" />
                                     </div>
                                     <div className="flex-1">
                                         <p className="text-sm font-semibold text-gray-600">Email Address</p>
@@ -212,8 +212,8 @@ const UserProfile = () => {
                             )}
 
                             <div className="flex items-start space-x-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-                                <div className="bg-blue-100 p-2 rounded-lg">
-                                    <CalendarIcon className="w-5 h-5 text-blue-600" />
+                                <div className="bg-orange-100 p-2 rounded-lg">
+                                    <CalendarIcon className="w-5 h-5 text-orange-600" />
                                 </div>
                                 <div className="flex-1">
                                     <p className="text-sm font-semibold text-gray-600">Account Created</p>
@@ -222,8 +222,8 @@ const UserProfile = () => {
                             </div>
 
                             <div className="flex items-start space-x-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-                                <div className="bg-purple-100 p-2 rounded-lg">
-                                    <CalendarIcon className="w-5 h-5 text-purple-600" />
+                                <div className="bg-red-100 p-2 rounded-lg">
+                                    <CalendarIcon className="w-5 h-5 text-red-600" />
                                 </div>
                                 <div className="flex-1">
                                     <p className="text-sm font-semibold text-gray-600">Last Sign In</p>
@@ -235,9 +235,9 @@ const UserProfile = () => {
                 </Card>
 
                 {/* Account Security */}
-                <Card className="border-l-4 border-l-green-500">
+                <Card className="border-l-4 border-l-orange-500">
                     <CardHeader>
-                        <CardTitle className="text-green-700 flex items-center">
+                        <CardTitle className="text-orange-700 flex items-center">
                             <ShieldCheckIcon className="w-5 h-5 mr-2" />
                             Account Security
                         </CardTitle>
@@ -305,18 +305,18 @@ const UserProfile = () => {
                                 {currentUser?.providerData?.some(p => p.providerId === 'password') && (
                                     <button
                                         onClick={() => setShowPasswordChange(!showPasswordChange)}
-                                        className="w-full flex items-center justify-between p-4 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-xl text-indigo-700 transition-colors group"
+                                        className="w-full flex items-center justify-between p-4 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl text-red-700 transition-colors group"
                                     >
                                         <div className="flex items-center space-x-3">
-                                            <div className="bg-indigo-100 p-2 rounded-lg group-hover:bg-indigo-200 transition-colors">
-                                                <KeyIcon className="w-5 h-5 text-indigo-600" />
+                                            <div className="bg-red-100 p-2 rounded-lg group-hover:bg-red-200 transition-colors">
+                                                <KeyIcon className="w-5 h-5 text-red-600" />
                                             </div>
                                             <div className="text-left">
                                                 <p className="font-semibold">Change Password</p>
-                                                <p className="text-sm text-indigo-600">Update your account password</p>
+                                                <p className="text-sm text-red-600">Update your account password</p>
                                             </div>
                                         </div>
-                                        <svg className="w-5 h-5 text-indigo-400 group-hover:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-5 h-5 text-red-400 group-hover:text-red-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                         </svg>
                                     </button>

@@ -46,7 +46,7 @@ export default function ClientDetailPage() {
   }, [clientId]);
 
   if (loading) return <div className="p-8 text-center">Loading client details...</div>;
-  if (!client) return <div className="p-8 text-center">Client not found. <Link to="/clients" className="text-indigo-600">Go back</Link></div>;
+  if (!client) return <div className="p-8 text-center">Client not found. <Link to="/clients" className="text-red-600">Go back</Link></div>;
 
   const handleClientUpdate = (updatedClient) => {
     setClient(updatedClient);
@@ -54,7 +54,7 @@ export default function ClientDetailPage() {
 
   return (
     <div>
-      <Link to="/clients" className="text-indigo-600 hover:underline my-6 mx-8 block">&larr; Back to all clients</Link>
+      <Link to="/clients" className="text-red-600 hover:underline my-6 mx-8 block">&larr; Back to all clients</Link>
 
       {/* New Client Banner */}
       {isRecentlyAdded(client) && (

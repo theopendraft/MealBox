@@ -252,7 +252,7 @@ export default function DashboardPage() {
         </div>
         <Link
           to="/dashboard/analytics"
-          className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+          className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-lg hover:from-red-700 hover:to-orange-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
         >
           <ChartBarIcon className="h-5 w-5 mr-2" />
           View Analytics
@@ -268,7 +268,7 @@ export default function DashboardPage() {
           change="+5 from yesterday"
           changeType="positive"
           icon={TruckIcon}
-          color="indigo"
+          color="red"
         />
 
         <StatsCard
@@ -304,7 +304,7 @@ export default function DashboardPage() {
           change="Last 48 hours"
           changeType={stats.newClients > 0 ? "positive" : "neutral"}
           icon={SparklesIcon}
-          color="purple"
+          color="orange"
         />
       </div>
 
@@ -318,7 +318,7 @@ export default function DashboardPage() {
           <CardHeader>
             <div className="flex justify-between items-center">
               <CardTitle className="flex items-center space-x-2">
-                <TruckIcon className="h-6 w-6 text-indigo-600" />
+                <TruckIcon className="h-6 w-6 text-red-600" />
                 <span>Today's Delivery Schedule</span>
               </CardTitle>
               <div className="flex items-center space-x-4">
@@ -326,7 +326,7 @@ export default function DashboardPage() {
                   Total: ₹{stats.todaysRevenue?.toLocaleString('en-IN') || 0}
                 </span>
                 <Button variant="ghost" size="sm" asChild>
-                  <Link to="/deliveries" className="text-indigo-600 hover:text-indigo-700">
+                  <Link to="/deliveries" className="text-red-600 hover:text-red-700">
                     View All →
                   </Link>
                 </Button>
@@ -339,26 +339,26 @@ export default function DashboardPage() {
                 deliveryList.map((delivery, index) => (
                   <div
                     key={`${delivery.id}-${delivery.mealType}-${index}`}
-                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-indigo-50 transition-all duration-200 hover:shadow-md group"
+                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-red-50 transition-all duration-200 hover:shadow-md group"
                   >
                     <div className="flex-1">
                       <div className="flex items-center space-x-3">
                         <div className="flex-1">
-                          <p className="font-medium text-gray-800 group-hover:text-indigo-800">{delivery.name}</p>
+                          <p className="font-medium text-gray-800 group-hover:text-red-800">{delivery.name}</p>
                           <p className="text-sm text-gray-500">{delivery.address}</p>
                         </div>
                         <div className="flex items-center space-x-2">
                           <span className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${delivery.mealType === 'lunch'
                             ? 'bg-yellow-100 text-yellow-800 group-hover:bg-yellow-200'
-                            : 'bg-purple-100 text-purple-800 group-hover:bg-purple-200'
+                            : 'bg-orange-100 text-orange-800 group-hover:bg-orange-200'
                             }`}>
                             {delivery.mealType?.charAt(0).toUpperCase() + delivery.mealType?.slice(1)}
                           </span>
                           <span className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${delivery.orderType === 'subscription'
-                            ? 'bg-green-100 text-green-800 group-hover:bg-green-200' :
+                            ? 'bg-red-100 text-red-800 group-hover:bg-red-200' :
                             delivery.orderType === 'main'
-                              ? 'bg-blue-100 text-blue-800 group-hover:bg-blue-200'
-                              : 'bg-indigo-100 text-indigo-800 group-hover:bg-indigo-200'
+                              ? 'bg-orange-100 text-orange-800 group-hover:bg-orange-200'
+                              : 'bg-red-100 text-red-800 group-hover:bg-red-200'
                             }`}>
                             {delivery.orderType === 'subscription' ? 'Subscription' :
                               delivery.orderType === 'main' ? 'On-Demand' : 'Single Order'}
@@ -367,7 +367,7 @@ export default function DashboardPage() {
                       </div>
                     </div>
                     <div className="text-right flex-shrink-0 ml-4">
-                      <p className="text-sm font-semibold text-indigo-600">{delivery.deliveryTimePreference}</p>
+                      <p className="text-sm font-semibold text-red-600">{delivery.deliveryTimePreference}</p>
                       <p className="text-sm font-bold text-gray-800">₹{delivery.price}</p>
                     </div>
                   </div>
@@ -395,7 +395,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Analytics Preview */}
-      <Card className="bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300">
+      <Card className="bg-gradient-to-br from-red-600 via-orange-600 to-red-700 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300">
         <CardContent className="p-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
             <div className="flex-1">
@@ -403,14 +403,14 @@ export default function DashboardPage() {
                 <SparklesIcon className="h-8 w-8 text-white" />
                 <h3 className="text-xl font-bold">Want deeper insights?</h3>
               </div>
-              <p className="text-indigo-100 text-sm leading-relaxed max-w-lg">
+              <p className="text-red-100 text-sm leading-relaxed max-w-lg">
                 View comprehensive analytics including revenue trends, customer insights, delivery performance metrics, and growth opportunities.
               </p>
             </div>
             <div className="flex-shrink-0">
               <Button
                 asChild
-                className=" text-indigo-600 bg-transparent hover:bg-indigo-50 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                className=" text-red-600 bg-transparent hover:bg-red-50 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
               >
                 <Link to="/dashboard/analytics" className="inline-flex items-center px-6 py-3 font-semibold">
                   <ChartBarIcon className="h-5 w-5 mr-2" />

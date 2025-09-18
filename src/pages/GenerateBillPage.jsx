@@ -116,7 +116,7 @@ export default function GenerateBillPage() {
 
   return (
     <div>
-      <Link to={`/clients/${clientId}`} className="text-indigo-600 hover:underline my-6 mx-8 block">&larr; Back to Client Details</Link>
+      <Link to={`/clients/${clientId}`} className="text-red-600 hover:underline my-6 mx-8 block">&larr; Back to Client Details</Link>
       <div className="px-8 pb-8">
         <h1 className="text-3xl font-bold">Generate Bill</h1>
         <h2 className="text-xl text-gray-600">for {client.name}</h2>
@@ -136,7 +136,7 @@ export default function GenerateBillPage() {
           <button
             onClick={handleCalculate}
             disabled={isCalculating}
-            className="mt-4 w-full sm:w-auto bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 disabled:bg-indigo-400"
+            className="mt-4 w-full sm:w-auto bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 disabled:bg-red-400"
           >
             {isCalculating ? 'Calculating...' : 'Calculate Bill'}
           </button>
@@ -190,14 +190,14 @@ export default function GenerateBillPage() {
               )}
               <div className="flex justify-between text-xl font-bold border-t pt-2 mt-2">
                 <span className="">Total Amount:</span>
-                <span className="text-green-600">₹{billPreview.finalAmount.toLocaleString('en-IN')}</span>
+                <span className="text-red-600">₹{billPreview.finalAmount.toLocaleString('en-IN')}</span>
               </div>
             </div>
             {!billSaved ? (
               <button
                 onClick={handleSaveBill}
                 disabled={isSaving}
-                className="mt-6 w-full bg-green-600 text-white py-3 rounded-md hover:bg-green-700 disabled:bg-green-400"
+                className="mt-6 w-full bg-red-600 text-white py-3 rounded-md hover:bg-red-700 disabled:bg-red-400"
               >
                 {isSaving ? 'Saving...' : 'Confirm & Generate Bill'}
               </button>

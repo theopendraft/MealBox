@@ -8,83 +8,85 @@ export const StatsCard = ({
     change,
     changeType = 'positive',
     icon: Icon,
-    color = 'indigo',
+    variant = 'default',
     subtitle,
     loading = false
 }) => {
-    const colorClasses = {
-        indigo: 'from-indigo-500 to-indigo-600 text-indigo-100',
-        green: 'from-green-500 to-green-600 text-green-100',
-        blue: 'from-blue-500 to-blue-600 text-blue-100',
-        purple: 'from-purple-500 to-purple-600 text-purple-100',
-        orange: 'from-orange-500 to-orange-600 text-orange-100',
-        red: 'from-red-500 to-red-600 text-red-100'
-    };
-
-    const iconColorClasses = {
-        indigo: 'text-indigo-200',
-        green: 'text-green-200',
-        blue: 'text-blue-200',
-        purple: 'text-purple-200',
-        orange: 'text-orange-200',
-        red: 'text-red-200'
-    };
-
     if (loading) {
         return (
-            <Card className="animate-pulse">
+            <Card className="animate-pulse p-4 sm:p-6">
                 <div className="flex items-center justify-between">
-                    <div>
-                        <div className="h-4 bg-gray-200 rounded w-20 mb-2"></div>
-                        <div className="h-8 bg-gray-200 rounded w-16 mb-1"></div>
-                        <div className="h-3 bg-gray-200 rounded w-12"></div>
+                    <div className="flex-1">
+                        <div className="h-3 sm:h-4 bg-gray-200 rounded w-16 sm:w-20 mb-2 sm:mb-3"></div>
+                        <div className="h-6 sm:h-8 bg-gray-200 rounded w-12 sm:w-16 mb-1 sm:mb-2"></div>
+                        <div className="h-2 sm:h-3 bg-gray-200 rounded w-10 sm:w-12"></div>
                     </div>
-                    <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+                    <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-200 rounded-xl"></div>
                 </div>
             </Card>
         );
     }
 
     return (
-        <Card
-            hover
-            className={`bg-gradient-to-r ${colorClasses[color]} text-white overflow-hidden relative`}
-        >
-            {/* Background Pattern */}
-            <div className="absolute inset-0 bg-white/5 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.1)_1px,transparent_0)] bg-[length:20px_20px]"></div>
-
-            <div className="relative flex items-center justify-between">
-                <div className="flex-1">
-                    <h3 className={`text-sm font-medium ${colorClasses[color].split(' ')[2]} opacity-90`}>
-                        {title}
-                    </h3>
-                    <p className="text-2xl font-bold text-white mt-1">
-                        {value}
-                    </p>
-                    {subtitle && (
-                        <p className="text-xs text-white/70 mt-1">
-                            {subtitle}
-                        </p>
-                    )}
-                    {change && (
-                        <div className={`flex items-center text-xs mt-1 ${changeType === 'positive' ? 'text-white/80' : 'text-white/80'
-                            }`}>
-                            {changeType === 'positive' ? (
-                                <ArrowUpIcon className="h-3 w-3 mr-1" />
-                            ) : (
-                                <ArrowDownIcon className="h-3 w-3 mr-1" />
+        <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-100 bg-white">
+            <div className="p-4 sm:p-6">
+                <div className="flex items-start sm:items-center justify-between flex-col sm:flex-row space-y-3 sm:space-y-0">
+                    <div className="flex-1 w-full">
+                        <div className="flex items-center justify-between mb-2 sm:mb-3">
+                            <h3 className="text-xs sm:text-sm font-medium text-gray-600 uppercase tracking-wide">
+                                {title}
+                            </h3>
+                            {Icon && (
+                                <div className={`
+                                    p-1.5 sm:p-2 rounded-lg sm:rounded-xl transition-colors duration-200
+                                    ${variant === 'primary'
+                                        ? 'bg-red-50 text-red-600 group-hover:bg-red-100'
+                                        : 'bg-gray-50 text-gray-600 group-hover:bg-gray-100'
+                                    }
+                                `}>
+                                    <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                                </div>
                             )}
-                            <span>{change}</span>
                         </div>
-                    )}
-                </div>
 
-                {Icon && (
-                    <div className="ml-4">
-                        <Icon className={`h-8 w-8 ${iconColorClasses[color]}`} />
+                        <div className="space-y-1">
+                            <p className={`text-2xl sm:text-3xl font-bold transition-colors duration-200 ${variant === 'primary'
+                                ? 'text-gray-900 group-hover:text-red-600'
+                                : 'text-gray-900'
+                                }`}>
+                                {value}
+                            </p>
+
+                            {subtitle && (
+                                <p className="text-xs sm:text-sm text-gray-500 font-medium">
+                                    {subtitle}
+                                </p>
+                            )}
+
+                            {change && (
+                                <div className={`flex items-center text-xs sm:text-sm font-medium ${changeType === 'positive'
+                                    ? 'text-emerald-600'
+                                    : 'text-red-500'
+                                    }`}>
+                                    {changeType === 'positive' ? (
+                                        <ArrowUpIcon className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                                    ) : (
+                                        <ArrowDownIcon className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                                    )}
+                                    <span>{change}</span>
+                                    <span className="text-gray-400 ml-1 hidden sm:inline">from last month</span>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                )}
+                </div>
             </div>
+
+            {/* Subtle bottom accent */}
+            <div className={`h-1 w-full transition-all duration-300 ${variant === 'primary'
+                ? 'bg-gradient-to-r from-red-500 to-orange-500'
+                : 'bg-gradient-to-r from-gray-200 to-gray-300 group-hover:from-red-500 group-hover:to-orange-500'
+                }`}></div>
         </Card>
     );
 };
