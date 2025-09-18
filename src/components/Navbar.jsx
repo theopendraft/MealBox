@@ -75,7 +75,7 @@ export default function Navbar({ setSidebarOpen }) {
   return (
     <header className={`backdrop-blur-md border-b shadow-sm sticky top-0 z-10 transition-colors duration-300 bg-white/80 border-gray-200'
       }`}>
-      <div className="flex items-center justify-between px-4 py-3">
+      <div className="flex items-center justify-between px-4 py-3 bg-white/80 ">
         {/* Left Section */}
         <div className="flex items-center space-x-4">
           {/* Mobile Menu Button */}
