@@ -8,7 +8,7 @@ export default function DailyDeliveryPage() {
   const [deliveryList, setDeliveryList] = useState([]);
   const [loading, setLoading] = useState(true);
   const { currentUser } = useAuth();
-  
+
   // Helper function to get today's date in YYYY-MM-DD format
   const getTodayDateString = () => {
     const today = new Date();
@@ -36,7 +36,7 @@ export default function DailyDeliveryPage() {
         for (const client of activeClients) {
           const pausesCollectionRef = collection(db, 'clients', client.id, 'pauses');
           const pausesSnapshot = await getDocs(pausesCollectionRef);
-          
+
           let isPausedToday = false;
           if (!pausesSnapshot.empty) {
             for (const pauseDoc of pausesSnapshot.docs) {
@@ -48,13 +48,13 @@ export default function DailyDeliveryPage() {
               }
             }
           }
-          
+
           // 4. If the client is not paused, add them to the final list
           if (!isPausedToday) {
             finalList.push(client);
           }
         }
-        
+
         setDeliveryList(finalList);
 
       } catch (error) {

@@ -64,8 +64,8 @@ export default function ClientInfoCard({ client, onClientUpdate }) {
           {/* Customer Type Badge */}
           <div className="mb-4">
             <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${client.customerType === 'subscribed'
-                ? 'bg-red-100 text-red-800'
-                : 'bg-orange-100 text-orange-800'
+              ? 'bg-red-100 text-red-800'
+              : 'bg-orange-100 text-orange-800'
               }`}>
               {client.customerType === 'subscribed' ? '📅 Subscription' : '⚡ On-Demand'}
             </span>

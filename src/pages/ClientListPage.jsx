@@ -179,8 +179,8 @@ export default function ClientListPage() {
                 <span>Subscribed Clients</span>
                 {stats.newSubscribed > 0 && (
                   <span className={`inline-flex items-center justify-center w-5 h-5 text-xs font-bold rounded-full ${activeTab === 'subscribed'
-                      ? 'bg-red-500 text-white'
-                      : 'bg-red-100 text-red-800'
+                    ? 'bg-red-500 text-white'
+                    : 'bg-red-100 text-red-800'
                     } animate-pulse`}>
                     {stats.newSubscribed}
                   </span>
@@ -198,8 +198,8 @@ export default function ClientListPage() {
                 <span>On-demand Clients</span>
                 {stats.newOndemand > 0 && (
                   <span className={`inline-flex items-center justify-center w-5 h-5 text-xs font-bold rounded-full ${activeTab === 'ondemand'
-                      ? 'bg-red-500 text-white'
-                      : 'bg-red-100 text-red-800'
+                    ? 'bg-red-500 text-white'
+                    : 'bg-red-100 text-red-800'
                     } animate-pulse`}>
                     {stats.newOndemand}
                   </span>

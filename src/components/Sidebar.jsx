@@ -100,9 +100,9 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         {/* Header Section */}
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
           <div className="flex items-center space-x-3">
-            
-              <img src="/MealBox.png" alt="MealBox Logo" className="w-8 h-8" />
-            
+
+            <img src="/MealBox.png" alt="MealBox Logo" className="w-8 h-8" />
+
             <div>
               <h2 className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
                 MealBox

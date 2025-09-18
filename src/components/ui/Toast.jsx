@@ -57,8 +57,8 @@ const Toast = ({
 
     return (
         <div className={`fixed top-4 right-4 z-50 transform transition-all duration-300 ${isVisible
-                ? 'translate-x-0 opacity-100 scale-100'
-                : 'translate-x-full opacity-0 scale-95 pointer-events-none'
+            ? 'translate-x-0 opacity-100 scale-100'
+            : 'translate-x-full opacity-0 scale-95 pointer-events-none'
             } ${className}`}>
             <div className={`max-w-sm w-full border rounded-lg shadow-lg p-4 ${config.bgColor}`}>
                 <div className="flex items-start">
