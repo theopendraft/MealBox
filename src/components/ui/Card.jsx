@@ -29,7 +29,7 @@ const Card = forwardRef(({
         <div
             ref={ref}
             className={`
-        bg-white rounded-xl backdrop-blur-sm 
+        bg-white rounded-xl backdrop-blur-sm  
         ${border ? 'border border-gray-200' : ''}
         ${shadowClasses[shadow]} 
         ${paddingClasses[padding]}
