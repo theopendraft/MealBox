@@ -21,7 +21,7 @@ const LandingPage = () => {
 
     // Hero section with clean, modern design inspired by Zomato/Swiggy
     const HeroSection = () => (
-        <section className="relative bg-white overflow-hidden pt-16">
+        <section className="relative bg-white overflow-hidden pt-14">
             {/* Subtle background pattern */}
             <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-white"></div>
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(239,68,68,0.1),transparent)]"></div>
@@ -30,14 +30,14 @@ const LandingPage = () => {
             <div className="absolute top-20 right-10 w-64 h-64 bg-red-50 rounded-full opacity-30 blur-3xl"></div>
             <div className="absolute bottom-40 left-10 w-48 h-48 bg-orange-50 rounded-full opacity-40 blur-2xl"></div>
 
-            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-20 lg:py-20">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                     {/* Hero Content */}
                     <div className="text-center lg:text-left">
                         {/* Trust badge */}
                         <div className="inline-flex items-center px-4 py-2 bg-red-50 border border-red-100 rounded-full text-sm font-medium text-red-700 mb-8">
                             <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-                            Trusted by 1000+ tiffin businesses
+                            1st Tiffin Managment Software of India
                         </div>
 
                         {/* Main headline */}

@@ -69,7 +69,7 @@ const UserProfile = () => {
         <div className="max-w-6xl mx-auto py-8 px-4 animate-fade-in">
             {/* Header Card */}
             <Card className="overflow-hidden mb-8">
-                <div className="bg-gradient-to-r from-red-600 to-orange-600 px-8 py-12 text-white">
+                <div className="rounded-md bg-gradient-to-r from-red-600 to-orange-600 px-8 py-12 text-white">
                     <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
                         <div className="relative">
                             {currentUser?.photoURL ? (
@@ -125,7 +125,7 @@ const UserProfile = () => {
                             <Button
                                 onClick={handleLogout}
                                 variant="outline"
-                                className="bg-red-500/20 border-red-300/50 text-red-100 hover:bg-red-500/30"
+                                className="bg-white/20 border-white/30 text-white hover:bg-white/30"
                             >
                                 <ArrowRightOnRectangleIcon className="w-4 h-4 mr-2" />
                                 Sign Out
@@ -151,17 +151,7 @@ const UserProfile = () => {
 
             {/* Password Change Modal */}
             {showPasswordChange && (
-                <Card className="mb-8 border-l-4 border-l-red-500">
-                    <CardHeader>
-                        <CardTitle className="text-red-700 flex items-center">
-                            <KeyIcon className="w-5 h-5 mr-2" />
-                            Change Password
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <PasswordChange onClose={() => setShowPasswordChange(false)} />
-                    </CardContent>
-                </Card>
+                <PasswordChange onClose={() => setShowPasswordChange(false)} />
             )}
 
             <div className="grid lg:grid-cols-2 gap-8">

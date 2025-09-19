@@ -72,7 +72,7 @@ export default function DailyDeliveryPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="space-y-8 animate-fade-in">
       <h1 className="text-3xl font-bold mb-2">Daily Delivery List</h1>
       <p className="text-gray-600 mb-6">Date: {new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
 

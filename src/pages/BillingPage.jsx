@@ -87,7 +87,7 @@ export default function BillingPage() {
   };
 
   return (
-    <div className="p-4 sm:p-8 space-y-8 animate-fade-in">
+    <div className="space-y-8 animate-fade-in">
       {/* Header Section */}
       <div className="text-center md:text-left">
         <h1 className="text-4xl font-bold text-gray-900 mb-2">

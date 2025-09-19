@@ -188,17 +188,17 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-start sm:items-center  justify-center m-0 p-2 sm:p-4 animate-fade-in">
-      <div className=" w-full max-w-4xl max-h-[98vh] sm:max-h-[95vh] mt-8 mb-4  animate-slide-up sm:animate-scale-in">
-        <Card className="overflow-hidden rounded-t-2xl sm:rounded-2xl">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+      <div className="w-full max-w-2xl max-h-[85vh] animate-scale-in">
+        <Card className="overflow-hidden rounded-2xl">
           {/* Mobile-Optimized Header */}
-          <CardHeader className="bg-gradient-to-r from-red-500 to-orange-600 text-white p-4 sm:p-6 grid grid-cols-1 ">
+          <CardHeader className="bg-gradient-to-r from-red-500 to-orange-600 text-white p-3 grid grid-cols-1 rounded-md">
             <div className="flex items-center justify-between">
               <div className="flex-1 min-w-0">
-                <CardTitle className="text-white text-lg sm:text-2xl font-bold truncate">
+                <CardTitle className="text-white text-lg font-bold truncate">
                   {mode === 'edit' ? 'Edit Client' : (isSubscribed ? 'Add New Subscriber' : 'Add On-Demand Client')}
                 </CardTitle>
-                <p className="text-red-100 mt-1 text-sm sm:text-base truncate">
+                <p className="text-red-100 mt-1 text-sm truncate">
                   {mode === 'edit' ? 'Update client information' : `Create a new ${isSubscribed ? 'subscription' : 'on-demand'} client`}
                 </p>
               </div>
@@ -206,22 +206,22 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                 type="button"
                 onClick={onClose}
                 variant="ghost"
-                className="text-white hover:bg-white/20 p-2 ml-2 flex-shrink-0"
+                className="text-white hover:bg-white/20 p-1 ml-2 flex-shrink-0"
               >
-                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </Button>
             </div>
 
             {/* Mobile-Optimized Progress Steps */}
-            <div className="mt-4 sm:mt-6">
+            <div className="mt-3">
               {/* Desktop Progress Steps */}
-              <div className="hidden sm:flex items-center justify-center space-x-4">
+              <div className="hidden sm:flex items-center justify-center space-x-3">
                 {stepTitles.map((title, idx) => (
                   <div key={title} className="flex items-center">
                     <div className={`
-                      flex items-center justify-center w-10 h-10 rounded-full font-semibold text-sm
+                      flex items-center justify-center w-8 h-8 rounded-full font-semibold text-xs
                       transition-all duration-300
                       ${step === idx
                         ? 'bg-white text-red-600 shadow-lg scale-110'
@@ -233,7 +233,7 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                       {step > idx ? '✓' : idx + 1}
                     </div>
                     {idx < stepTitles.length - 1 && (
-                      <div className={`w-12 h-1 mx-2 rounded transition-colors duration-300 ${step > idx ? 'bg-red-300' : 'bg-red-400/50'
+                      <div className={`w-8 h-1 mx-2 rounded transition-colors duration-300 ${step > idx ? 'bg-red-300' : 'bg-red-400/50'
                         }`} />
                     )}
                   </div>
@@ -255,25 +255,25 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
               </div>
 
               {/* Step Labels */}
-              <div className="flex justify-center mt-3">
+              <div className="flex justify-center mt-2">
                 <div className="text-center">
-                  <h3 className="text-white font-semibold text-sm sm:text-base">{stepTitles[step]}</h3>
+                  <h3 className="text-white font-semibold text-sm">{stepTitles[step]}</h3>
                 </div>
               </div>
             </div>
           </CardHeader>
 
           <form onSubmit={handleSubmit}>
-            <CardContent className="p-3 sm:p-6 max-h-[50vh] sm:max-h-[60vh] overflow-y-auto">
-              <div className="space-y-4 sm:space-y-6">
+            <CardContent className="p-4 max-h-[45vh] overflow-y-auto">
+              <div className="space-y-4">
                 {/* Step 1: Personal Details */}
                 {step === 0 && (
                   <div className="animate-slide-in-right">
                     <Card className="border-l-4 border-l-red-500">
-                      <CardContent className="p-0 sm:p-6">
-                        <div className="grid grid-cols-1 gap-4 sm:gap-6">
+                      <CardContent className="p-4">
+                        <div className="grid grid-cols-1 gap-4">
                           <div>
-                            <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                               Full Name *
                             </label>
                             <input
@@ -283,14 +283,14 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                               required
                               value={formData.name}
                               onChange={handleChange}
-                              className="w-full px-3 py-3 sm:px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors text-base"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors text-sm"
                               placeholder="Enter full name"
                             />
                           </div>
 
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                              <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
+                              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                                 Phone Number *
                               </label>
                               <input
@@ -300,13 +300,13 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                                 required
                                 value={formData.phone}
                                 onChange={handleChange}
-                                className="w-full px-3 py-3 sm:px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors text-base"
-                                placeholder="Enter phone number"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors text-sm"
+                                placeholder="Phone number"
                               />
                             </div>
 
                             <div>
-                              <label htmlFor="deliveryTimePreference" className="block text-sm font-semibold text-gray-700 mb-2">
+                              <label htmlFor="deliveryTimePreference" className="block text-sm font-medium text-gray-700 mb-1">
                                 Delivery Time
                               </label>
                               <select
@@ -314,7 +314,7 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                                 id="deliveryTimePreference"
                                 value={formData.deliveryTimePreference}
                                 onChange={handleChange}
-                                className="w-full px-3 py-3 sm:px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors text-base"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors text-sm"
                               >
                                 <option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
                                 <option value="01:00 PM - 02:00 PM">01:00 PM - 02:00 PM</option>
@@ -325,7 +325,7 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                           </div>
 
                           <div>
-                            <label htmlFor="address" className="block text-sm font-semibold text-gray-700 mb-2">
+                            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
                               Delivery Address *
                             </label>
                             <textarea
@@ -334,8 +334,8 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                               required
                               value={formData.address}
                               onChange={handleChange}
-                              rows={3}
-                              className="w-full px-3 py-3 sm:px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors resize-none text-base"
+                              rows={2}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors resize-none text-sm"
                               placeholder="Enter complete delivery address"
                             />
                           </div>
@@ -349,10 +349,10 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                 {step === 1 && (
                   <div className="animate-slide-in-right">
                     <Card className="border-l-4 border-l-green-500">
-                      <CardContent className="p-4 sm:p-6">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                      <CardContent className="p-4">
+                        <div className="grid grid-cols-3 gap-3">
                           <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
                               Number of Roti *
                             </label>
                             <input
@@ -362,34 +362,34 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                               max="20"
                               value={formData.preferences.rotiCount}
                               onChange={handleChange}
-                              className="w-full px-3 py-3 sm:px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors text-base"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors text-sm"
                             />
                           </div>
 
                           <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
                               Include Rice?
                             </label>
                             <select
                               name="preferences-rice"
                               value={formData.preferences.rice}
                               onChange={handleChange}
-                              className="w-full px-3 py-3 sm:px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors text-base"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors text-sm"
                             >
                               <option value="Yes">Yes</option>
                               <option value="No">No</option>
                             </select>
                           </div>
 
-                          <div className="sm:col-span-2 lg:col-span-1">
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
                               Spice Level
                             </label>
                             <select
                               name="preferences-spiceLevel"
                               value={formData.preferences.spiceLevel}
                               onChange={handleChange}
-                              className="w-full px-3 py-3 sm:px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors text-base"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors text-sm"
                             >
                               <option value="Mild">🌶️ Mild</option>
                               <option value="Medium">🌶️🌶️ Medium</option>
@@ -397,17 +397,17 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                             </select>
                           </div>
 
-                          <div className="sm:col-span-2 lg:col-span-3">
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                          <div className="col-span-3">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
                               Special Instructions
                             </label>
                             <textarea
                               name="preferences-notes"
                               value={formData.preferences.notes}
                               onChange={handleChange}
-                              rows={3}
-                              className="w-full px-3 py-3 sm:px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors resize-none text-base"
-                              placeholder="Any special dietary requirements or cooking instructions..."
+                              rows={2}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors resize-none text-sm"
+                              placeholder="Any special dietary requirements..."
                             />
                           </div>
                         </div>
@@ -646,15 +646,15 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
               </div>
             </CardContent>
 
-            {/* Mobile-Optimized Navigation Footer */}
-            <div className="px-3 py-3 sm:px-6 sm:py-4 bg-gray-50 border-t border-gray-200">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div className="flex gap-2 sm:gap-3 order-2 sm:order-1">
+            {/* Navigation Footer */}
+            <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex gap-2">
                   <Button
                     type="button"
                     onClick={onClose}
                     variant="secondary"
-                    className="flex-1 sm:flex-initial px-4 sm:px-6 text-sm sm:text-base"
+                    className="px-4 text-sm"
                   >
                     Cancel
                   </Button>
@@ -663,20 +663,20 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                       type="button"
                       onClick={() => setStep(step - 1)}
                       variant="outline"
-                      className="flex-1 sm:flex-initial px-4 sm:px-6 text-sm sm:text-base"
+                      className="px-4 text-sm"
                     >
                       ← Back
                     </Button>
                   )}
                 </div>
 
-                <div className="order-1 sm:order-2">
+                <div>
                   {step < 2 ? (
                     <Button
                       type="button"
                       onClick={() => canProceed() && setStep(step + 1)}
                       disabled={!canProceed()}
-                      className="w-full sm:w-auto px-6 sm:px-8 text-sm sm:text-base"
+                      className="px-6 text-sm"
                     >
                       Next →
                     </Button>
@@ -685,11 +685,11 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
                       type="submit"
                       loading={isSaving}
                       disabled={isSaving || !canProceed()}
-                      className="w-full sm:w-auto px-6 sm:px-8 text-sm sm:text-base"
+                      className="px-6 text-sm"
                     >
                       {isSaving ? (
                         <span className="flex items-center justify-center">
-                          <svg className="animate-spin -ml-1 mr-3 h-4 w-4 sm:h-5 sm:w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                           </svg>

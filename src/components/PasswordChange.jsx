@@ -156,10 +156,11 @@ const PasswordChange = ({ onClose }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999] animate-fade-in">
             <div className="max-w-md w-full animate-scale-in">
                 <Card className="overflow-hidden">
-                    <CardHeader className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+                    <CardHeader 
+                    className="grid p-4 rounded-md items-center mb-4 bg-gradient-to-r from-red-600 to-orange-600 text-white">
                         <div className="flex justify-between items-center">
                             <CardTitle className="text-white text-xl font-bold flex items-center">
                                 <LockClosedIcon className="w-6 h-6 mr-2" />

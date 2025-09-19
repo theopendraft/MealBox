@@ -172,7 +172,7 @@ const AuthPage = () => {
                 {/* Logo/Brand Section */}
                 <div className="text-center">
  <img src="/MealBox.png" alt="MealBox Logo" className="mx-auto h-20 w-20 mb-6" />
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                    <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-2">
                         MealBox
                     </h1>
                     <p className="text-gray-600 text-lg">Manage your tiffin business efficiently</p>
@@ -184,7 +184,7 @@ const AuthPage = () => {
                         <div className="flex bg-gray-100 rounded-xl p-1 mb-8">
                             <button
                                 className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all duration-300 ${isLoginMode
-                                    ? 'bg-white text-indigo-600 shadow-md transform scale-105'
+                                    ? 'bg-white text-orange-600 shadow-md transform scale-105'
                                     : 'text-gray-500 hover:text-gray-700'
                                     }`}
                                 onClick={() => setIsLoginMode(true)}
@@ -193,7 +193,7 @@ const AuthPage = () => {
                             </button>
                             <button
                                 className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all duration-300 ${!isLoginMode
-                                    ? 'bg-white text-indigo-600 shadow-md transform scale-105'
+                                    ? 'bg-white text-orange-600 shadow-md transform scale-105'
                                     : 'text-gray-500 hover:text-gray-700'
                                     }`}
                                 onClick={() => setIsLoginMode(false)}
@@ -225,7 +225,7 @@ const AuthPage = () => {
                                             <button
                                                 onClick={handleResendVerification}
                                                 disabled={isLoading}
-                                                className="mt-3 text-sm text-indigo-600 hover:text-indigo-500 underline disabled:opacity-50 font-medium transition-colors"
+                                                className="mt-3 text-sm text-orange-600 hover:text-orange-500 underline disabled:opacity-50 font-medium transition-colors"
                                             >
                                                 {isLoading ? (
                                                     <span className="flex items-center">
@@ -250,13 +250,13 @@ const AuthPage = () => {
                                         Full Name
                                     </label>
                                     <div className="relative group">
-                                        <UserIcon className="h-5 w-5 text-gray-400 absolute left-3 top-3 transition-colors group-focus-within:text-indigo-500" />
+                                        <UserIcon className="h-5 w-5 text-gray-400 absolute left-3 top-3 transition-colors group-focus-within:text-orange-500" />
                                         <input
                                             type="text"
                                             name="name"
                                             value={formData.name}
                                             onChange={handleInputChange}
-                                            className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 hover:border-gray-400"
+                                            className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 hover:border-gray-400"
                                             placeholder="Enter your full name"
                                             required={!isLoginMode}
                                         />
@@ -269,13 +269,13 @@ const AuthPage = () => {
                                     Email Address
                                 </label>
                                 <div className="relative group">
-                                    <EnvelopeIcon className="h-5 w-5 text-gray-400 absolute left-3 top-3 transition-colors group-focus-within:text-indigo-500" />
+                                    <EnvelopeIcon className="h-5 w-5 text-gray-400 absolute left-3 top-3 transition-colors group-focus-within:text-orange-500" />
                                     <input
                                         type="email"
                                         name="email"
                                         value={formData.email}
                                         onChange={handleInputChange}
-                                        className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 hover:border-gray-400"
+                                        className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 hover:border-gray-400"
                                         placeholder="Enter your email"
                                         required
                                     />
@@ -287,13 +287,13 @@ const AuthPage = () => {
                                     Password
                                 </label>
                                 <div className="relative group">
-                                    <LockClosedIcon className="h-5 w-5 text-gray-400 absolute left-3 top-3 transition-colors group-focus-within:text-indigo-500" />
+                                    <LockClosedIcon className="h-5 w-5 text-gray-400 absolute left-3 top-3 transition-colors group-focus-within:text-orange-500" />
                                     <input
                                         type={showPassword ? 'text' : 'password'}
                                         name="password"
                                         value={formData.password}
                                         onChange={handleInputChange}
-                                        className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 hover:border-gray-400"
+                                        className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 hover:border-gray-400"
                                         placeholder="Enter your password"
                                         required
                                     />
@@ -317,13 +317,13 @@ const AuthPage = () => {
                                         Confirm Password
                                     </label>
                                     <div className="relative group">
-                                        <LockClosedIcon className="h-5 w-5 text-gray-400 absolute left-3 top-3 transition-colors group-focus-within:text-indigo-500" />
+                                        <LockClosedIcon className="h-5 w-5 text-gray-400 absolute left-3 top-3 transition-colors group-focus-within:text-orange-500" />
                                         <input
                                             type={showPassword ? 'text' : 'password'}
                                             name="confirmPassword"
                                             value={formData.confirmPassword}
                                             onChange={handleInputChange}
-                                            className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 hover:border-gray-400"
+                                            className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 hover:border-gray-400"
                                             placeholder="Confirm your password"
                                             required={!isLoginMode}
                                         />
@@ -336,7 +336,7 @@ const AuthPage = () => {
                                     <button
                                         type="button"
                                         onClick={() => setShowForgotPassword(true)}
-                                        className="text-sm text-indigo-600 hover:text-indigo-500 font-medium transition-colors"
+                                        className="text-sm text-orange-600 hover:text-orange-500 font-medium transition-colors"
                                     >
                                         Forgot password?
                                     </button>
@@ -346,7 +346,7 @@ const AuthPage = () => {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-4 rounded-xl hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 font-semibold shadow-lg"
+                                className="w-full bg-gradient-to-r from-red-600 to-orange-600 text-white py-3 px-4 rounded-xl hover:from-orange-700 hover:to-red-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 font-semibold shadow-lg"
                             >
                                 {isLoading ? (
                                     <span className="flex items-center justify-center">
