@@ -78,7 +78,7 @@ A modern, professional tiffin service management platform built with React and F
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/yourusername/mealbox-admin-panel.git
+   git clone https://github.com/theopendraft/mealbox-admin-panel.git
    cd mealbox-admin-panel
    ```
 
@@ -322,11 +322,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 **Author**
 
-**Your Name**
+**Pankaj Yadav**
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
-- Email: your.email@example.com
+- GitHub: [@theopendraft](https://github.com/theopendraft)
+- LinkedIn: [Pankaj Yadav](https://www.linkedin.com/in/pankaj-yadav-5998b3249/)
+- Email: py898969@gmail.com
 
 ## 🙏 **Acknowledgments**
 
@@ -340,9 +340,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you have any questions or need help, please:
 
-1. Check the [Issues](https://github.com/yourusername/mealbox-admin-panel/issues) page
+1. Check the [Issues](https://github.com/theopendraft/mealbox-admin-panel/issues) page
 2. Create a new issue with detailed description
-3. Contact support at support@mealbox.com
+3. Contact support at mealbox@gmail.com
 
 ---
 
