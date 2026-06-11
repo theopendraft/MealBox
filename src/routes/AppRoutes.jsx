@@ -15,6 +15,14 @@ import BroadcastPage from '../pages/BroadcastPage';
 import BillingPage from '../pages/BillingPage';
 import GenerateBillPage from '../pages/GenerateBillPage';
 import BillDetailPage from '../pages/BillDetailPage';
+import LandingPage from '../pages/LandingPage1';
+import { useAuth } from '../context/AuthContext';
+
+// If logged in, skip the landing page and go straight to dashboard
+function RootRoute() {
+  const { currentUser } = useAuth();
+  return currentUser ? <Navigate to="/dashboard" replace /> : <LandingPage />;
+}
 
 const AnalyticsPage = lazy(() => import('../pages/AnalyticsPage'));
 
@@ -27,7 +35,7 @@ const Spinner = () => (
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/kitchen" replace />} />
+      <Route path="/" element={<RootRoute />} />
 
       <Route path="/login" element={<AuthPage />} />
       <Route path="/auth" element={<AuthPage />} />

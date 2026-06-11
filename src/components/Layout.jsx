@@ -1,14 +1,41 @@
 // src/components/Layout.jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { db } from '../config/firebase';
+import { useAuth } from '../context/AuthContext';
+import { createTodayRecords } from '../utils/dailyRecords';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import BottomNavBar from './BottomNavBar';
 import AddClientModal from './AddClientModal';
 
 export default function Layout({ children }) {
+  const { currentUser } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [addClientOpen, setAddClientOpen] = useState(false);
+  const clientCountRef = useRef(null);
+
+  // Global auto-sync: whenever a new active client is added anywhere in the app,
+  // immediately create their daily record for today so Kitchen/Delivery show them.
+  useEffect(() => {
+    if (!currentUser) return;
+    const q = query(
+      collection(db, 'clients'),
+      where('ownerId', '==', currentUser.uid),
+      where('status', '==', 'active')
+    );
+    const unsub = onSnapshot(q, async (snap) => {
+      const count = snap.docs.length;
+      if (clientCountRef.current === null || count > clientCountRef.current) {
+        clientCountRef.current = count;
+        try { await createTodayRecords(currentUser.uid); } catch { /* silent */ }
+      } else {
+        clientCountRef.current = count;
+      }
+    });
+    return unsub;
+  }, [currentUser]);
 
   useEffect(() => {
     const checkScreenSize = () => {

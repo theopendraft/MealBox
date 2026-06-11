@@ -1,5 +1,5 @@
 // src/pages/KitchenPage.jsx
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { collectionGroup, collection, query, where, onSnapshot } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../config/firebase';
@@ -26,30 +26,8 @@ export default function KitchenPage() {
   const [records, setRecords] = useState(null); // null = loading
   const [starting, setStarting] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  const clientCountRef = useRef(null); // tracks last seen client count to detect additions
   const dateStr = getTodayStr();
   const today = new Date();
-
-  // Auto-create records whenever the clients list changes (new client added = auto sync)
-  useEffect(() => {
-    if (!currentUser) return;
-    const q = query(
-      collection(db, 'clients'),
-      where('ownerId', '==', currentUser.uid),
-      where('status', '==', 'active')
-    );
-    const unsub = onSnapshot(q, async (snap) => {
-      const newCount = snap.docs.length;
-      // On first load OR when count increases, auto-create missing records for today
-      if (clientCountRef.current === null || newCount > clientCountRef.current) {
-        clientCountRef.current = newCount;
-        try { await createTodayRecords(currentUser.uid); } catch { /* silent */ }
-      } else {
-        clientCountRef.current = newCount;
-      }
-    });
-    return unsub;
-  }, [currentUser]);
 
   // Realtime listener for today's daily records
   useEffect(() => {
