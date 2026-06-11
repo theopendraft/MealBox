@@ -2,47 +2,41 @@
 import { useState, useEffect } from 'react';
 import { db } from '../config/firebase';
 import { collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
+import { useToast } from './ui/Toast';
 
 const getTodayDateString = () => new Date().toISOString().slice(0, 10);
 
 export default function OrderManager({ client }) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [confirmingId, setConfirmingId] = useState(null);
+  const { showSuccess, showError } = useToast();
 
-  // State for the new order form
   const [orderDate, setOrderDate] = useState(getTodayDateString());
   const [mealType, setMealType] = useState('lunch');
   const [price, setPrice] = useState(client.plan?.lunch?.price || '');
   const [isSaving, setIsSaving] = useState(false);
 
-  // Auto-update price when mealType changes
   useEffect(() => {
-    if (mealType === 'lunch') {
-      setPrice(client.plan?.lunch?.price || '');
-    } else {
-      setPrice(client.plan?.dinner?.price || '');
-    }
+    setPrice(mealType === 'lunch' ? client.plan?.lunch?.price || '' : client.plan?.dinner?.price || '');
   }, [mealType, client.plan]);
 
-  // Real-time listener for single orders
   useEffect(() => {
     if (!client) return;
-    const ordersQuery = query(
-      collection(db, 'clients', client.id, 'orders'),
-      orderBy('orderDate', 'desc')
+    const unsubscribe = onSnapshot(
+      query(collection(db, 'clients', client.id, 'orders'), orderBy('orderDate', 'desc')),
+      (snapshot) => {
+        setOrders(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setLoading(false);
+      }
     );
-    const unsubscribe = onSnapshot(ordersQuery, (snapshot) => {
-      const ordersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setOrders(ordersData);
-      setLoading(false);
-    });
     return () => unsubscribe();
   }, [client]);
 
   const handleAddOrder = async (e) => {
     e.preventDefault();
     if (!price || price <= 0) {
-      alert("Please enter a valid price for the tiffin.");
+      showError("Please enter a valid price for the tiffin.");
       return;
     }
     setIsSaving(true);
@@ -51,27 +45,32 @@ export default function OrderManager({ client }) {
         orderDate,
         mealType,
         price: Number(price),
-        status: 'scheduled', // or 'delivered'
+        status: 'scheduled',
         createdAt: new Date(),
       });
-      // Reset form
+      showSuccess("Order added.");
       setOrderDate(getTodayDateString());
     } catch (error) {
       console.error("Error adding order:", error);
-      alert("Failed to add order.");
+      showError("Failed to add order.");
     } finally {
       setIsSaving(false);
     }
   };
 
-  const handleDeleteOrder = async (orderId, orderDate, mealType) => {
-    if (window.confirm(`Are you sure you want to cancel the ${mealType} order for ${orderDate}?`)) {
-      try {
-        await deleteDoc(doc(db, 'clients', client.id, 'orders', orderId));
-      } catch (error) {
-        console.error("Error deleting order:", error);
-        alert("Failed to cancel order.");
-      }
+  const requestDelete = (orderId) => {
+    setConfirmingId(orderId);
+    setTimeout(() => setConfirmingId(null), 4000);
+  };
+
+  const handleDeleteOrder = async (orderId, mealType, orderDate) => {
+    setConfirmingId(null);
+    try {
+      await deleteDoc(doc(db, 'clients', client.id, 'orders', orderId));
+      showSuccess(`${mealType} order for ${orderDate} cancelled.`);
+    } catch (error) {
+      console.error("Error deleting order:", error);
+      showError("Failed to cancel order.");
     }
   };
 
@@ -114,13 +113,30 @@ export default function OrderManager({ client }) {
             </div>
             <div className="flex items-center space-x-2">
               <p className="font-semibold">₹{order.price}</p>
-              <button
-                onClick={() => handleDeleteOrder(order.id, order.orderDate, order.mealType)}
-                className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
-                title="Cancel Order"
-              >
-                ✕
-              </button>
+              {confirmingId === order.id ? (
+                <span className="flex gap-1">
+                  <button
+                    onClick={() => handleDeleteOrder(order.id, order.mealType, order.orderDate)}
+                    className="bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700"
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    onClick={() => setConfirmingId(null)}
+                    className="bg-gray-300 text-gray-700 px-2 py-1 rounded text-xs hover:bg-gray-400"
+                  >
+                    No
+                  </button>
+                </span>
+              ) : (
+                <button
+                  onClick={() => requestDelete(order.id)}
+                  className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
+                  title="Cancel Order"
+                >
+                  ✕
+                </button>
+              )}
             </div>
           </div>
         ))}

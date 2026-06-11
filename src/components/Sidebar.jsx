@@ -11,7 +11,9 @@ import {
   ArrowRightOnRectangleIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  CogIcon
+  CogIcon,
+  WrenchScrewdriverIcon,
+  FireIcon,
 } from '@heroicons/react/24/outline';
 import {
   HomeIcon as HomeIconSolid,
@@ -20,7 +22,9 @@ import {
   TruckIcon as TruckIconSolid,
   CurrencyRupeeIcon as CurrencyRupeeIconSolid,
   UserIcon as UserIconSolid,
-  CogIcon as CogIconSolid
+  CogIcon as CogIconSolid,
+  WrenchScrewdriverIcon as WrenchScrewdriverIconSolid,
+  FireIcon as FireIconSolid,
 } from '@heroicons/react/24/solid';
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
@@ -28,32 +32,39 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
   const navLinks = [
     {
+      name: 'Kitchen',
+      path: '/kitchen',
+      icon: FireIcon,
+      iconSolid: FireIconSolid,
+      description: "Today's cook sheet"
+    },
+    {
+      name: 'Delivery Route',
+      path: '/deliveries',
+      icon: TruckIcon,
+      iconSolid: TruckIconSolid,
+      description: 'Mark deliveries done'
+    },
+    {
       name: 'Dashboard',
       path: '/dashboard',
       icon: HomeIcon,
       iconSolid: HomeIconSolid,
       description: 'Overview & quick stats'
     },
-    // {
-    //   name: 'Analytics',
-    //   path: '/dashboard/analytics',
-    //   icon: ChartBarIcon,
-    //   iconSolid: ChartBarIconSolid,
-    //   description: 'Business insights'
-    // },
+    {
+      name: 'Analytics',
+      path: '/dashboard/analytics',
+      icon: ChartBarIcon,
+      iconSolid: ChartBarIconSolid,
+      description: 'Business insights'
+    },
     {
       name: 'Clients',
       path: '/clients',
       icon: UsersIcon,
       iconSolid: UsersIconSolid,
       description: 'Manage customers'
-    },
-    {
-      name: 'Daily Deliveries',
-      path: '/deliveries',
-      icon: TruckIcon,
-      iconSolid: TruckIconSolid,
-      description: 'Today\'s deliveries'
     },
     {
       name: 'Billing',
@@ -68,7 +79,14 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       icon: UserIcon,
       iconSolid: UserIconSolid,
       description: 'Account settings'
-    }
+    },
+    {
+      name: 'Settings',
+      path: '/settings',
+      icon: WrenchScrewdriverIcon,
+      iconSolid: WrenchScrewdriverIconSolid,
+      description: 'Business & rates'
+    },
   ];
 
   const handleLogout = async () => {

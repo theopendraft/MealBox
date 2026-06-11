@@ -3,7 +3,6 @@ import { useState, useRef, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import LiveNotifications from './LiveNotifications';
 import {
   Bars3Icon,
   MagnifyingGlassIcon,
@@ -145,11 +144,6 @@ export default function Navbar({ setSidebarOpen }) {
               <MoonIcon className="h-5 w-5 text-gray-600 group-hover:text-red-600 transition-colors duration-200" />
             )}
           </button> */}
-
-          {/* Notifications */}
-          <div className="relative">
-            <LiveNotifications />
-          </div>
 
           {/* Mobile Search */}
           <button className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200">

@@ -1,180 +1,290 @@
 // src/components/ClientInfoCard.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { collection, doc, updateDoc, getDocs, addDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../config/firebase';
+import { useToast } from './ui/Toast';
+import { PLAN_TYPES, PLAN_BADGE } from '../config/plans';
 import AddClientModal from './AddClientModal';
-import { Card, CardHeader, CardTitle, CardContent } from './ui/Card';
-import { Button } from './ui/Button';
+
+const STATUSES = [
+  { key: 'active',   label: 'Active',      dot: 'bg-green-500' },
+  { key: 'paused',   label: 'Paused',      dot: 'bg-amber-400' },
+  { key: 'inactive', label: 'Inactive',    dot: 'bg-gray-400'  },
+];
+
+const DAYS = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+const DAY_SHORT = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+const formatPauseRange = (p) => {
+  if (p.startDate === p.endDate) return p.startDate;
+  return `${p.startDate} – ${p.endDate}`;
+};
 
 export default function ClientInfoCard({ client, onClientUpdate }) {
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [showPauseForm, setShowPauseForm] = useState(false);
+  const [pauses, setPauses] = useState([]);
+  const [pauseStart, setPauseStart] = useState('');
+  const [pauseEnd, setPauseEnd] = useState('');
+  const [pauseMeal, setPauseMeal] = useState('both');
+  const [isSavingPause, setIsSavingPause] = useState(false);
+  const { showSuccess, showError } = useToast();
+
+  useEffect(() => {
+    if (!client?.id) return;
+    getDocs(collection(db, 'clients', client.id, 'pauses'))
+      .then(snap => setPauses(snap.docs.map(d => ({ id: d.id, ...d.data() }))))
+      .catch(() => {});
+  }, [client?.id]);
 
   if (!client) return null;
 
-  const handleEditComplete = (updatedClient) => {
-    setIsEditModalOpen(false);
-    // Call the callback if provided to update parent component
-    if (onClientUpdate) {
-      onClientUpdate(updatedClient);
+  const plan = PLAN_TYPES[client.planType];
+  const currentStatusIndex = STATUSES.findIndex(s => s.key === (client.status || 'active'));
+
+  const handleStatusChange = async (key) => {
+    if (key === client.status || isUpdatingStatus) return;
+    setIsUpdatingStatus(true);
+    try {
+      await updateDoc(doc(db, 'clients', client.id), { status: key });
+      showSuccess(`${client.name} marked as ${key}.`);
+      if (onClientUpdate) onClientUpdate({ ...client, status: key });
+    } catch {
+      showError('Failed to update status.');
+    } finally {
+      setIsUpdatingStatus(false);
     }
   };
 
+  const handleAddPause = async () => {
+    if (!pauseStart || !pauseEnd || new Date(pauseStart) > new Date(pauseEnd)) {
+      showError('Please select a valid date range.');
+      return;
+    }
+    setIsSavingPause(true);
+    try {
+      const docRef = await addDoc(collection(db, 'clients', client.id, 'pauses'), {
+        startDate: pauseStart, endDate: pauseEnd, mealType: pauseMeal, createdAt: serverTimestamp(),
+      });
+      setPauses(prev => [...prev, { id: docRef.id, startDate: pauseStart, endDate: pauseEnd, mealType: pauseMeal }]);
+      setPauseStart(''); setPauseEnd(''); setPauseMeal('both');
+      setShowPauseForm(false);
+      showSuccess('Pause added.');
+    } catch {
+      showError('Failed to add pause.');
+    } finally {
+      setIsSavingPause(false);
+    }
+  };
+
+  const handleDeletePause = async (pauseId) => {
+    try {
+      await deleteDoc(doc(db, 'clients', client.id, 'pauses', pauseId));
+      setPauses(prev => prev.filter(p => p.id !== pauseId));
+      showSuccess('Pause removed.');
+    } catch {
+      showError('Failed to remove pause.');
+    }
+  };
+
+  const inputCls = 'flex-1 px-3 py-2.5 bg-gray-100 border-0 rounded-xl text-sm focus:ring-2 focus:ring-red-500 focus:bg-white transition-all outline-none';
+
   return (
     <>
-      <Card className="border-l-4 border-l-red-500 hover:shadow-lg transition-shadow duration-300">
-        <CardHeader>
-          <div className="flex justify-between items-start">
-            <div className="flex-1">
-              <CardTitle className="text-red-700 text-2xl mb-2">
-                {client.name}
-              </CardTitle>
-              <div className="space-y-1">
-                <div className="flex items-center text-gray-600">
-                  <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                  </svg>
-                  {client.phone}
-                </div>
-                <div className="flex items-start text-gray-600">
-                  <svg className="w-4 h-4 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                  </svg>
-                  <span className="flex-1">{client.address}</span>
-                </div>
-                <div className="flex items-center text-gray-500 text-sm">
-                  <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                  </svg>
-                  Delivery: {client.deliveryTimePreference}
-                </div>
+      <div className="bg-white rounded-2xl shadow-sm ring-1 ring-black/[0.04] overflow-hidden">
+
+        {/* Header: name + edit */}
+        <div className="bg-gradient-to-r from-red-500 to-orange-500 px-5 py-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-white text-xl font-bold truncate">{client.name}</h2>
+                {plan && (
+                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${PLAN_BADGE[client.planType]}`}>
+                    {plan.label} · ₹{plan.price}
+                  </span>
+                )}
+              </div>
+              <div className="mt-1.5 flex flex-col gap-0.5">
+                <span className="text-red-100 text-sm">📞 {client.phone}</span>
+                <span className="text-red-100 text-sm">📍 {client.address}</span>
+                {client.routeArea && <span className="text-red-200 text-xs">{client.routeArea} · {client.deliveryTimePreference}</span>}
               </div>
             </div>
-            <Button
-              onClick={() => setIsEditModalOpen(true)}
-              variant="outline"
-              className="p-2 border-red-200 text-red-600 hover:bg-red-50"
-              title="Edit Client Details"
+            <button
+              onClick={() => setIsEditOpen(true)}
+              className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors flex-shrink-0 active:scale-95"
             >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
               </svg>
-            </Button>
+            </button>
           </div>
-        </CardHeader>
+        </div>
 
-        <CardContent>
-          {/* Customer Type Badge */}
-          <div className="mb-4">
-            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${client.customerType === 'subscribed'
-              ? 'bg-red-100 text-red-800'
-              : 'bg-orange-100 text-orange-800'
-              }`}>
-              {client.customerType === 'subscribed' ? '📅 Subscription' : '⚡ On-Demand'}
-            </span>
-          </div>
+        {/* Body */}
+        <div className="px-5 pt-4 pb-5 space-y-5">
 
-          {/* Subscription/Order Details */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {client.customerType === 'ondemand' ? (
-              <>
-                <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                  <h3 className="font-semibold text-orange-800 mb-2">Order Details</h3>
-                  <div className="space-y-1 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-orange-600">Date:</span>
-                      <span className="font-medium">{client.plan?.date || 'N/A'}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-orange-600">Meal:</span>
-                      <span className="font-medium capitalize">{client.plan?.mealType || 'N/A'}</span>
-                    </div>
-                    {client.plan?.price && (
-                      <div className="flex justify-between border-t border-orange-200 pt-1 mt-2">
-                        <span className="text-orange-600">Price:</span>
-                        <span className="font-bold text-orange-800">₹{client.plan.price}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="bg-red-50 p-4 rounded-lg border border-red-200">
-                  <h3 className="font-semibold text-red-800 mb-2">Subscription Period</h3>
-                  <div className="space-y-1 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-red-600">Start:</span>
-                      <span className="font-medium">{client.plan?.startDate || 'N/A'}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-red-600">End:</span>
-                      <span className="font-medium">{client.plan?.endDate || 'Ongoing'}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                  <h3 className="font-semibold text-orange-800 mb-2">Meal Plan</h3>
-                  <div className="space-y-1 text-sm">
-                    {client.plan?.lunch?.subscribed && (
-                      <div className="flex justify-between">
-                        <span className="text-orange-600">🍛 Lunch:</span>
-                        <span className="font-bold">₹{client.plan.lunch.price}</span>
-                      </div>
-                    )}
-                    {client.plan?.dinner?.subscribed && (
-                      <div className="flex justify-between">
-                        <span className="text-orange-600">🍽️ Dinner:</span>
-                        <span className="font-bold">₹{client.plan.dinner.price}</span>
-                      </div>
-                    )}
-                    {!client.plan?.lunch?.subscribed && !client.plan?.dinner?.subscribed && (
-                      <span className="text-gray-500 text-xs">No meals selected</span>
-                    )}
-                  </div>
-                </div>
-              </>
-            )}
+          {/* Status segmented control */}
+          <div>
+            <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">Status</p>
+            <div className="bg-gray-100 rounded-xl p-1 flex gap-0.5">
+              {STATUSES.map(s => (
+                <button
+                  key={s.key}
+                  onClick={() => handleStatusChange(s.key)}
+                  disabled={isUpdatingStatus}
+                  className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-semibold transition-all duration-200 active:scale-[0.97] ${
+                    client.status === s.key || (!client.status && s.key === 'active')
+                      ? 'bg-white text-gray-900 shadow-sm'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
+                  {s.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Meal Preferences */}
-          <div className="mt-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <h3 className="font-semibold text-gray-800 mb-2 flex items-center">
-              <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
-              </svg>
-              Preferences
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Roti:</span>
-                <span className="font-medium">{client.preferences?.rotiCount || 'N/A'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Rice:</span>
-                <span className="font-medium">{client.preferences?.rice || 'N/A'}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Spice:</span>
-                <span className="font-medium">{client.preferences?.spiceLevel || 'N/A'}</span>
+          {/* Pause accordion (only for subscribed clients) */}
+          {client.customerType !== 'ondemand' && (
+            <div className="bg-gray-50 rounded-xl overflow-hidden">
+              <button
+                onClick={() => setShowPauseForm(v => !v)}
+                className="w-full px-4 py-3 flex items-center justify-between text-sm font-semibold text-gray-700 hover:bg-gray-100 transition-colors active:bg-gray-100"
+              >
+                <span className="flex items-center gap-2">
+                  <span className="text-base">⏸</span>
+                  Pause Delivery
+                  {pauses.length > 0 && (
+                    <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-semibold">{pauses.length}</span>
+                  )}
+                </span>
+                <svg
+                  className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${showPauseForm ? 'rotate-90' : ''}`}
+                  fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+
+              {showPauseForm && (
+                <div className="px-4 pb-4 space-y-3 border-t border-gray-200">
+                  {/* Active pauses as chips */}
+                  {pauses.length > 0 && (
+                    <div className="flex flex-wrap gap-2 pt-3">
+                      {pauses.map(p => (
+                        <span
+                          key={p.id}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-200 text-amber-800 text-xs font-medium rounded-xl"
+                        >
+                          {formatPauseRange(p)}
+                          {p.mealType && p.mealType !== 'both' && (
+                            <span className="text-amber-500">· {p.mealType}</span>
+                          )}
+                          <button
+                            onClick={() => handleDeletePause(p.id)}
+                            className="ml-0.5 text-amber-400 hover:text-red-600 transition-colors"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Add new pause form */}
+                  <div className="pt-1 space-y-2">
+                    <div className="flex gap-2">
+                      <div className="flex-1">
+                        <label className="block text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-1">From</label>
+                        <input type="date" value={pauseStart} onChange={e => setPauseStart(e.target.value)} className={inputCls} />
+                      </div>
+                      <div className="flex-1">
+                        <label className="block text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-1">To</label>
+                        <input type="date" value={pauseEnd} onChange={e => setPauseEnd(e.target.value)} className={inputCls} />
+                      </div>
+                    </div>
+                    <div className="flex gap-1.5">
+                      {[['both','Both'],['lunch','Lunch'],['dinner','Dinner']].map(([val, lbl]) => (
+                        <button key={val} type="button" onClick={() => setPauseMeal(val)}
+                          className={`flex-1 py-2 rounded-xl text-xs font-semibold border-2 transition-all active:scale-95 ${
+                            pauseMeal === val ? 'border-red-500 bg-red-50 text-red-700' : 'border-gray-200 text-gray-500 bg-white'
+                          }`}
+                        >{lbl}</button>
+                      ))}
+                    </div>
+                    <button
+                      onClick={handleAddPause}
+                      disabled={isSavingPause || !pauseStart || !pauseEnd}
+                      className="w-full py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold disabled:opacity-40 hover:bg-red-700 active:scale-[0.97] transition-all"
+                    >
+                      {isSavingPause ? 'Saving…' : '+ Add Pause'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Plan details */}
+          {plan && (
+            <div>
+              <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">Plan</p>
+              <div className="bg-gray-50 rounded-xl px-4 py-3 space-y-2">
+                <p className="text-sm text-gray-600">{plan.description}</p>
+                {client.customerType !== 'ondemand' && client.deliverySchedule && (
+                  <div className="flex gap-1.5">
+                    {DAYS.map((d, i) => (
+                      <span key={d} className={`flex-1 text-center py-1.5 rounded-lg text-[10px] font-bold transition-colors ${
+                        client.deliverySchedule[d] ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-400'
+                      }`}>
+                        {DAY_SHORT[i].slice(0, 2)}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {client.customerType === 'ondemand' && client.plan?.date && (
+                  <p className="text-sm text-gray-500">Order date: {client.plan.date}</p>
+                )}
+                {client.customerType !== 'ondemand' && client.startDate && (
+                  <div className="flex items-center gap-3 pt-1 border-t border-gray-200 text-xs text-gray-500">
+                    <span>📅 Started {client.startDate}</span>
+                    {client.endDate
+                      ? <span>→ Ends {client.endDate}</span>
+                      : <span className="text-green-600 font-medium">· Ongoing</span>
+                    }
+                  </div>
+                )}
               </div>
             </div>
-            {client.preferences?.notes && (
-              <div className="mt-3 pt-3 border-t border-gray-200">
-                <span className="text-gray-600 text-sm">Notes: </span>
-                <span className="text-gray-800 text-sm italic">{client.preferences.notes}</span>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+          )}
 
-      {/* Edit Client Modal */}
-      {isEditModalOpen && (
+          {/* Preferences */}
+          <div>
+            <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-2">Kitchen Preferences</p>
+            <div className="bg-gray-50 rounded-xl px-4 py-3">
+              <div className="flex gap-4 text-sm">
+                <span className="text-gray-600">Spice: <strong className="text-gray-900">{client.preferences?.spiceLevel || '—'}</strong></span>
+                <span className="text-gray-600">Rice: <strong className="text-gray-900">{client.preferences?.riceVolume || client.preferences?.rice || '—'}</strong></span>
+              </div>
+              {client.preferences?.notes && (
+                <p className="mt-2 text-sm text-gray-500 italic">"{client.preferences.notes}"</p>
+              )}
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {isEditOpen && (
         <AddClientModal
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          onSuccess={handleEditComplete}
+          isOpen={isEditOpen}
+          onClose={() => setIsEditOpen(false)}
+          onSuccess={(updated) => { setIsEditOpen(false); if (onClientUpdate) onClientUpdate(updated); }}
           clientToEdit={client}
-          mode={client.customerType}
         />
       )}
     </>

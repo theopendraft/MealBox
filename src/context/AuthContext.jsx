@@ -2,8 +2,7 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import {
   auth,
-  googleProvider,
-  facebookProvider
+  googleProvider
 } from '../config/firebase';
 import {
   onAuthStateChanged,
@@ -65,10 +64,6 @@ export function AuthProvider({ children }) {
     return signInWithPopup(auth, googleProvider);
   };
 
-  const signInWithFacebook = () => {
-    return signInWithPopup(auth, facebookProvider);
-  };
-
   // Password Management
   const resetPassword = (email) => {
     return sendPasswordResetEmail(auth, email);
@@ -110,7 +105,6 @@ export function AuthProvider({ children }) {
     login,
     signup,
     signInWithGoogle,
-    signInWithFacebook,
     resetPassword,
     changePassword,
     sendVerificationEmail,
@@ -121,7 +115,11 @@ export function AuthProvider({ children }) {
   // 6. Provide the context value to children
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {loading ? (
+        <div className="min-h-screen flex items-center justify-center bg-white">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+        </div>
+      ) : children}
     </AuthContext.Provider>
   );
 }

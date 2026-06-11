@@ -3,89 +3,62 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
-
+import { getCurrentMonth, getFullMonthLabel } from '../utils/cycles';
 import ClientInfoCard from '../components/ClientInfoCard';
-import BillingHistoryCard from '../components/BillingHistoryCard';
-import PauseManager from '../components/PauseManager';
-import OrderManager from '../components/OrderManager';
 
 export default function ClientDetailPage() {
   const [client, setClient] = useState(null);
   const [loading, setLoading] = useState(true);
   const { clientId } = useParams();
 
-  // Check if a client was added recently (within last 48 hours)
-  const isRecentlyAdded = (client) => {
-    if (!client?.createdAt) return false;
-
-    const now = new Date();
-    const createdAt = client.createdAt.toDate ? client.createdAt.toDate() : new Date(client.createdAt);
-    const hoursDiff = (now - createdAt) / (1000 * 60 * 60);
-
-    return hoursDiff <= 48;
-  };
-
   useEffect(() => {
     if (!clientId) return;
-    const fetchClientData = async () => {
-      setLoading(true);
-      try {
-        const docSnap = await getDoc(doc(db, 'clients', clientId));
-        if (docSnap.exists()) {
-          setClient({ id: docSnap.id, ...docSnap.data() });
-        } else {
-          setClient(null);
-        }
-      } catch (error) {
-        console.error("Error fetching client details:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchClientData();
+    setLoading(true);
+    getDoc(doc(db, 'clients', clientId))
+      .then(snap => setClient(snap.exists() ? { id: snap.id, ...snap.data() } : null))
+      .catch(err => console.error('Error fetching client:', err))
+      .finally(() => setLoading(false));
   }, [clientId]);
 
-  if (loading) return <div className="p-8 text-center">Loading client details...</div>;
-  if (!client) return <div className="p-8 text-center">Client not found. <Link to="/clients" className="text-red-600">Go back</Link></div>;
+  if (loading) return (
+    <div className="flex items-center justify-center py-20 text-gray-400">
+      <div className="w-7 h-7 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
-  const handleClientUpdate = (updatedClient) => {
-    setClient(updatedClient);
-  };
+  if (!client) return (
+    <div className="p-8 text-center text-gray-500">
+      Client not found. <Link to="/clients" className="text-red-600 font-medium">← Go back</Link>
+    </div>
+  );
 
   return (
-    <div>
-      <Link to="/clients" className="text-red-600 hover:underline my-6 mx-8 block">&larr; Back to all clients</Link>
+    <div className="max-w-xl mx-auto space-y-4">
 
-      {/* New Client Banner */}
-      {isRecentlyAdded(client) && (
-        <div className="mx-8 mb-6 bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-lg p-4">
-          <div className="flex items-center space-x-3">
-            <div className="flex-shrink-0">
-              <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-sm font-medium text-red-800">
-                Recently Added Client
-              </h3>
-              <p className="text-sm text-red-700">
-                This client was added recently and may need additional setup or verification.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 px-8 pb-8">
-        <div className="lg:col-span-1 space-y-8">
-          <ClientInfoCard client={client} onClientUpdate={handleClientUpdate} />
-          {/* --- THE FIX IS HERE --- */}
-          <BillingHistoryCard client={client} />
-          <OrderManager client={client} />
-        </div>
-        <div className="lg:col-span-2">
-          <PauseManager client={client} />
-        </div>
+      {/* Header nav */}
+      <div className="flex items-center justify-between pt-2">
+        <Link to="/clients"
+          className="flex items-center gap-1 text-sm font-semibold text-red-600 active:opacity-70 transition-opacity"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          All Clients
+        </Link>
+        <Link
+          to={`/clients/${client.id}/ledger`}
+          className="flex items-center gap-1.5 text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-xl transition-colors active:scale-[0.97]"
+        >
+          📋 {getFullMonthLabel(getCurrentMonth())} Ledger
+          <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
       </div>
+
+      {/* Client info card (includes pause accordion) */}
+      <ClientInfoCard client={client} onClientUpdate={setClient} />
+
     </div>
   );
 }

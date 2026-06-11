@@ -20,7 +20,6 @@ const AuthPage = () => {
         login,
         signup,
         signInWithGoogle,
-        signInWithFacebook,
         resendVerificationEmail
     } = useAuth();
 
@@ -43,7 +42,7 @@ const AuthPage = () => {
     // Auto-redirect when user is authenticated (handles COOP policy edge cases)
     useEffect(() => {
         if (currentUser) {
-            navigate('/dashboard');
+            navigate('/kitchen');
         }
     }, [currentUser, navigate]);
 
@@ -71,7 +70,7 @@ const AuthPage = () => {
             if (isLoginMode) {
                 await login(formData.email, formData.password);
                 setSuccess('Successfully signed in! Redirecting...');
-                setTimeout(() => navigate('/dashboard'), 1000);
+                setTimeout(() => navigate('/kitchen'), 1000);
             } else {
                 if (formData.password !== formData.confirmPassword) {
                     throw new Error('Passwords do not match');
@@ -108,20 +107,15 @@ const AuthPage = () => {
         }
     };
 
-    const handleSocialAuth = async (provider) => {
+    const handleGoogleAuth = async () => {
         setIsLoading(true);
         setError('');
         setSuccess('');
 
         try {
-            if (provider === 'google') {
-                await signInWithGoogle();
-                setSuccess('Successfully signed in with Google! Redirecting...');
-            } else if (provider === 'facebook') {
-                await signInWithFacebook();
-                setSuccess('Successfully signed in with Facebook! Redirecting...');
-            }
-            setTimeout(() => navigate('/dashboard'), 1000);
+            await signInWithGoogle();
+            setSuccess('Successfully signed in with Google! Redirecting...');
+            setTimeout(() => navigate('/kitchen'), 1000);
         } catch (err) {
             let errorMessage = err.message;
 
@@ -133,10 +127,8 @@ const AuthPage = () => {
                 errorMessage = 'Only one sign-in request allowed at a time.';
             } else if (err.code === 'auth/network-request-failed') {
                 errorMessage = 'Network error. Please check your internet connection and try again.';
-            } else if (err.message.includes('Cross-Origin-Opener-Policy')) {
-                // Handle COOP policy issues gracefully
-                errorMessage = 'Authentication completed but with a browser policy warning. You should be signed in successfully.';
-                // Still try to navigate as the authentication might have succeeded
+            } else if (err.message?.includes('Cross-Origin-Opener-Policy')) {
+                errorMessage = 'Authentication completed. You should be signed in successfully.';
                 setTimeout(() => navigate('/dashboard'), 2000);
             }
 
@@ -371,9 +363,9 @@ const AuthPage = () => {
                             </div>
                         </div>
 
-                        <div className="mt-8 grid grid-cols-2 gap-4">
+                        <div className="mt-8">
                             <button
-                                onClick={() => handleSocialAuth('google')}
+                                onClick={handleGoogleAuth}
                                 disabled={isLoading}
                                 className="w-full inline-flex justify-center items-center py-3 px-4 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:shadow-md transform hover:scale-105"
                             >
@@ -383,18 +375,7 @@ const AuthPage = () => {
                                     <path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                                     <path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                                 </svg>
-                                Google
-                            </button>
-
-                            <button
-                                onClick={() => handleSocialAuth('facebook')}
-                                disabled={isLoading}
-                                className="w-full inline-flex justify-center items-center py-3 px-4 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:shadow-md transform hover:scale-105"
-                            >
-                                <svg className="h-5 w-5 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M20 10c0-5.523-4.477-10-10-10S0 4.477 0 10c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V10h2.54V7.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V10h2.773l-.443 2.89h-2.33v6.988C16.343 19.128 20 14.991 20 10z" clipRule="evenodd" />
-                                </svg>
-                                Facebook
+                                Continue with Google
                             </button>
                         </div>
                     </CardContent>

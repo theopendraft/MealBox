@@ -1,128 +1,124 @@
 // src/components/ClientTable.jsx
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { db } from '../config/firebase';
-import { doc, deleteDoc } from 'firebase/firestore';
+import { useToast } from './ui/Toast';
+import { PLAN_TYPES, PLAN_BADGE } from '../config/plans';
+import { deleteClientAndData } from '../utils/deleteClient';
+
+const STATUS_DOT = {
+  active:   'bg-green-500',
+  paused:   'bg-amber-400',
+  inactive: 'bg-gray-400',
+};
 
 export default function ClientTable({ clients, onDeleteSuccess, onEditClick }) {
+  const { showSuccess, showError } = useToast();
+  const [confirmingId, setConfirmingId] = useState(null);
 
-  // Check if a client was added recently (within last 48 hours)
-  const isRecentlyAdded = (client) => {
-    if (!client.createdAt) return false;
-
-    const now = new Date();
-    const createdAt = client.createdAt.toDate ? client.createdAt.toDate() : new Date(client.createdAt);
-    const hoursDiff = (now - createdAt) / (1000 * 60 * 60);
-
-    return hoursDiff <= 48; // Consider recent if added within last 48 hours
+  const requestDelete = (id) => {
+    setConfirmingId(id);
+    setTimeout(() => setConfirmingId(null), 4000);
   };
 
-  // Handles the deletion of a client document
-  const handleDelete = async (clientId, clientName) => {
-    // Ask for confirmation before proceeding with a destructive action
-    if (window.confirm(`Are you sure you want to delete ${clientName}? This action cannot be undone.`)) {
-      try {
-        // Create a reference to the specific client document in Firestore
-        const clientDocRef = doc(db, 'clients', clientId);
-
-        // Delete the document from Firestore
-        await deleteDoc(clientDocRef);
-
-        // Call the success callback function passed from the parent to refresh the list
-        onDeleteSuccess();
-      } catch (error) {
-        console.error("Error deleting client: ", error);
-        alert("Failed to delete client. Please try again.");
-      }
+  const handleDelete = async (id, name) => {
+    setConfirmingId(null);
+    try {
+      // Cascade-delete client + all subcollections (dailyRecords, cycles, pauses, orders)
+      // so Kitchen/Delivery pages no longer show this client's data
+      await deleteClientAndData(id);
+      showSuccess(`${name} and all their records deleted.`);
+      onDeleteSuccess();
+    } catch {
+      showError('Failed to delete client.');
     }
   };
 
-  // If there are no clients, display a user-friendly message
   if (clients.length === 0) {
-    return <p className="text-center text-gray-500 py-10">No clients found. Add a new client to get started!</p>;
+    return (
+      <div className="text-center py-16 text-gray-400">
+        <div className="text-4xl mb-3">👥</div>
+        <p className="text-sm font-medium">No clients yet</p>
+        <p className="text-xs mt-1">Tap the + button to add one</p>
+      </div>
+    );
   }
 
   return (
-    <div className="overflow-x-auto shadow-md rounded-lg">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plan</th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-            <th scope="col" className="relative px-6 py-3">
-              <span className="sr-only">Actions</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {clients.map((client) => (
-            <tr key={client.id} className="hover:bg-gray-50">
-              <td className="px-6 py-4 whitespace-nowrap">
-                <Link to={`/clients/${client.id}`} className="hover:underline">
-                  <div className="flex items-center space-x-2">
-                    <div className="text-sm font-medium text-indigo-600">{client.name}</div>
-                    {isRecentlyAdded(client) && (
-                      <div className="relative">
-                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                        <div className="absolute inset-0 w-2 h-2 bg-red-500 rounded-full animate-ping opacity-75"></div>
-                      </div>
-                    )}
-                  </div>
-                </Link>
-                <div className="text-sm text-gray-500">{client.address}</div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{client.phone}</td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                {client.plan && (client.plan.lunch || client.plan.dinner) ? (
-                  <>
-                    <div className="text-sm text-gray-900">
-                      {client.plan.lunch?.subscribed ? `Lunch: ₹${client.plan.lunch.price}` : ''}
-                      {client.plan.lunch?.subscribed && client.plan.dinner?.subscribed ? ' | ' : ''}
-                      {client.plan.dinner?.subscribed ? `Dinner: ₹${client.plan.dinner.price}` : ''}
-                    </div>
-                    {(client.plan.startDate || client.plan.endDate) && (
-                      <div className="text-xs text-gray-500">
-                        {client.plan.startDate ? `From: ${client.plan.startDate}` : ''}
-                        {client.plan.startDate && client.plan.endDate ? ' - ' : ''}
-                        {client.plan.endDate ? `To: ${client.plan.endDate}` : ''}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className="text-sm text-gray-500 italic">On-demand</div>
-                )}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${client.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                  }`}
-                >
-                  {client.status}
-                </span>
-                {isRecentlyAdded(client) && (
-                  <span className="ml-2 px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full border border-red-200">
-                    NEW
-                  </span>
-                )}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+    <div className="space-y-2">
+      {clients.map(client => {
+        const plan = PLAN_TYPES[client.planType];
+        const status = client.status || 'active';
+
+        return (
+          <div key={client.id}
+            className="bg-white rounded-2xl shadow-sm ring-1 ring-black/[0.04] overflow-hidden">
+            <Link
+              to={`/clients/${client.id}`}
+              className="flex items-center gap-3 px-4 py-3.5 active:bg-gray-50 transition-colors"
+            >
+              {/* Status dot */}
+              <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${STATUS_DOT[status] || STATUS_DOT.active}`} />
+
+              {/* Main info */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-semibold text-gray-900 text-sm">{client.name}</span>
+                  {plan && (
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${PLAN_BADGE[client.planType]}`}>
+                      {plan.label}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-3 mt-0.5">
+                  <span className="text-xs text-gray-400">{client.phone}</span>
+                  {client.routeArea && (
+                    <span className="text-xs text-gray-400">📍 {client.routeArea}</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Chevron */}
+              <svg className="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+
+            {/* Actions */}
+            <div className="flex border-t border-gray-100">
+              <button
+                onClick={() => onEditClick(client)}
+                className="flex-1 py-2.5 text-xs font-semibold text-blue-600 hover:bg-blue-50 active:bg-blue-100 transition-colors"
+              >
+                Edit
+              </button>
+              <div className="w-px bg-gray-100" />
+              {confirmingId === client.id ? (
+                <div className="flex-1 flex">
+                  <button
+                    onClick={() => handleDelete(client.id, client.name)}
+                    className="flex-1 py-2.5 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 transition-colors"
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    onClick={() => setConfirmingId(null)}
+                    className="flex-1 py-2.5 text-xs font-semibold text-gray-500 hover:bg-gray-100 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
                 <button
-                  onClick={() => onEditClick(client)}
-                  className="text-indigo-600 hover:text-indigo-900"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(client.id, client.name)}
-                  className="text-red-600 hover:text-red-900 ml-4"
+                  onClick={() => requestDelete(client.id)}
+                  className="flex-1 py-2.5 text-xs font-semibold text-red-500 hover:bg-red-50 active:bg-red-100 transition-colors"
                 >
                   Delete
                 </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              )}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

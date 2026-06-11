@@ -3,9 +3,8 @@ import { initializeApp } from "firebase/app";
 import {
   getAuth,
   GoogleAuthProvider,
-  FacebookAuthProvider,
 } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -23,15 +22,12 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
+// Enable offline persistence (silent fail if unsupported or multiple tabs)
+enableIndexedDbPersistence(db).catch(() => {});
+
 // Initialize auth providers
 export const googleProvider = new GoogleAuthProvider();
-export const facebookProvider = new FacebookAuthProvider();
 
-// Configure providers
 googleProvider.setCustomParameters({
   prompt: "select_account",
-});
-
-facebookProvider.setCustomParameters({
-  display: "popup",
 });

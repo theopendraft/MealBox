@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { collection, doc, getDocs, query, orderBy, addDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import { useToast } from './ui/Toast';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -84,11 +85,12 @@ const generateCalendarEvents = (client, pauses, orders) => {
 
 export default function PauseManager({ client }) {
   const [pauses, setPauses] = useState([]);
-  const [orders, setOrders] = useState([]); // NEW state for single orders
+  const [orders, setOrders] = useState([]);
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [pendingCalendarAction, setPendingCalendarAction] = useState(null);
+  const { showSuccess, showError, showInfo } = useToast();
 
-  // State for the "Add Pause" form
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [mealType, setMealType] = useState('both');
@@ -127,7 +129,7 @@ export default function PauseManager({ client }) {
   const handleAddPause = async (e) => {
     e.preventDefault();
     if (!startDate || !endDate || new Date(startDate) > new Date(endDate)) {
-      alert("Please select a valid start and end date.");
+      showError("Please select a valid start and end date.");
       return;
     }
     try {
@@ -140,36 +142,49 @@ export default function PauseManager({ client }) {
       setStartDate('');
       setEndDate('');
       setMealType('both');
-      fetchScheduleData(); // Refresh data
+      showSuccess("Pause period added.");
+      fetchScheduleData();
     } catch (error) {
-      console.error("Error adding pause period: ", error);
-      alert("Failed to add pause period.");
+      console.error("Error adding pause period:", error);
+      showError("Failed to add pause period.");
     }
   };
 
-  // Handler for toggling service on a single day by clicking the calendar
-  const handleDateClick = async (clickInfo) => {
+  const handleDateClick = (clickInfo) => {
     const clickedDateStr = clickInfo.dateStr;
     const existingPause = pauses.find(p => clickedDateStr >= p.startDate && clickedDateStr <= p.endDate);
 
     if (existingPause) {
       if (existingPause.startDate === existingPause.endDate) {
-        if (window.confirm(`Resume service for ${clickedDateStr}?`)) {
-          await deleteDoc(doc(db, 'clients', client.id, 'pauses', existingPause.id));
-          fetchScheduleData(); // Refresh data
-        }
+        setPendingCalendarAction({ type: 'resume', dateStr: clickedDateStr, pauseId: existingPause.id });
       } else {
-        alert("To modify a multi-day pause, please use the form.");
+        showInfo("To modify a multi-day pause, please use the form above.");
       }
     } else {
-      if (window.confirm(`Pause service for ${clickedDateStr}?`)) {
+      setPendingCalendarAction({ type: 'pause', dateStr: clickedDateStr });
+    }
+  };
+
+  const confirmCalendarAction = async () => {
+    if (!pendingCalendarAction) return;
+    const { type, dateStr, pauseId } = pendingCalendarAction;
+    setPendingCalendarAction(null);
+    try {
+      if (type === 'resume') {
+        await deleteDoc(doc(db, 'clients', client.id, 'pauses', pauseId));
+        showSuccess(`Service resumed for ${dateStr}.`);
+      } else {
         await addDoc(collection(db, 'clients', client.id, 'pauses'), {
-          startDate: clickedDateStr,
-          endDate: clickedDateStr,
+          startDate: dateStr,
+          endDate: dateStr,
           createdAt: serverTimestamp(),
         });
-        fetchScheduleData(); // Refresh data
+        showSuccess(`Service paused for ${dateStr}.`);
       }
+      fetchScheduleData();
+    } catch (error) {
+      console.error("Error updating schedule:", error);
+      showError("Failed to update schedule.");
     }
   };
 
@@ -201,6 +216,30 @@ export default function PauseManager({ client }) {
       </div>
       <div className="bg-white shadow-md rounded-lg p-6">
         <h2 className="text-2xl font-bold mb-4">Delivery Schedule</h2>
+        {pendingCalendarAction && (
+          <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-center justify-between">
+            <p className="text-sm font-medium text-amber-800">
+              {pendingCalendarAction.type === 'pause'
+                ? `Pause service for ${pendingCalendarAction.dateStr}?`
+                : `Resume service for ${pendingCalendarAction.dateStr}?`
+              }
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={confirmCalendarAction}
+                className="px-3 py-1 bg-red-600 text-white text-sm rounded-md hover:bg-red-700"
+              >
+                {pendingCalendarAction.type === 'pause' ? 'Pause' : 'Resume'}
+              </button>
+              <button
+                onClick={() => setPendingCalendarAction(null)}
+                className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-md hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
         {loading ? <p>Loading Schedule...</p> : (
           <FullCalendar
             plugins={[dayGridPlugin, interactionPlugin]}
