@@ -23,16 +23,14 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        // Exclude all Firebase/Google API traffic — Firebase SDK manages its own
+        // offline persistence; service worker caching these causes Cache.put() errors
+        // on streaming WebChannel (Firestore Listen) connections.
+        navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/firestore\.googleapis\.com/,
-            handler: 'NetworkFirst',
-            options: { cacheName: 'firestore-cache', networkTimeoutSeconds: 10 },
-          },
-          {
-            urlPattern: /^https:\/\/identitytoolkit\.googleapis\.com/,
-            handler: 'NetworkFirst',
-            options: { cacheName: 'firebase-auth-cache', networkTimeoutSeconds: 10 },
+            urlPattern: /^https:\/\/(firestore|firebase|identitytoolkit|securetoken)\.googleapis\.com/,
+            handler: 'NetworkOnly',
           },
         ],
       },
