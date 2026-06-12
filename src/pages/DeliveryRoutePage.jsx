@@ -224,6 +224,7 @@ export default function DeliveryRoutePage() {
                 <DeliveryCard
                   key={record.customerId}
                   record={record}
+                  planMap={planMap}
                   onStatusChange={handleStatusChange}
                   onModify={handleModify}
                 />
@@ -294,7 +295,7 @@ export default function DeliveryRoutePage() {
   );
 }
 
-const DeliveryCard = memo(function DeliveryCard({ record, onStatusChange, onModify }) {
+const DeliveryCard = memo(function DeliveryCard({ record, planMap, onStatusChange, onModify }) {
   const plan = planMap[record.planType];
   const isLocked = record.status === 'locked';
   const isDelivered = record.status === 'delivered';
