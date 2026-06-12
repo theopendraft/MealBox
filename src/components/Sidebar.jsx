@@ -34,20 +34,6 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
   const navLinks = [
     {
-      name: 'Kitchen',
-      path: '/kitchen',
-      icon: FireIcon,
-      iconSolid: FireIconSolid,
-      description: "Today's cook sheet"
-    },
-    {
-      name: 'Delivery Route',
-      path: '/deliveries',
-      icon: TruckIcon,
-      iconSolid: TruckIconSolid,
-      description: 'Mark deliveries done'
-    },
-    {
       name: 'Dashboard',
       path: '/dashboard',
       icon: HomeIcon,
@@ -60,6 +46,20 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       icon: ChartBarIcon,
       iconSolid: ChartBarIconSolid,
       description: 'Business insights'
+    },
+    {
+      name: 'Kitchen',
+      path: '/kitchen',
+      icon: FireIcon,
+      iconSolid: FireIconSolid,
+      description: "Today's cook sheet"
+    },
+    {
+      name: 'Delivery Route',
+      path: '/deliveries',
+      icon: TruckIcon,
+      iconSolid: TruckIconSolid,
+      description: 'Mark deliveries done'
     },
     {
       name: 'Clients',
@@ -75,12 +75,13 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       iconSolid: CurrencyRupeeIconSolid,
       description: 'Invoices & payments'
     },
+    
     {
-      name: 'Profile',
-      path: '/profile',
-      icon: UserIcon,
-      iconSolid: UserIconSolid,
-      description: 'Account settings'
+      name: 'Menu & Plans',
+      path: '/setup',
+      icon: ClipboardDocumentListIcon,
+      iconSolid: ClipboardDocumentListIconSolid,
+      description: 'Manage meal plans'
     },
     {
       name: 'Settings',
@@ -88,13 +89,6 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       icon: WrenchScrewdriverIcon,
       iconSolid: WrenchScrewdriverIconSolid,
       description: 'Business & rates'
-    },
-    {
-      name: 'Menu & Plans',
-      path: '/setup',
-      icon: ClipboardDocumentListIcon,
-      iconSolid: ClipboardDocumentListIconSolid,
-      description: 'Manage meal plans'
     },
   ];
 
@@ -117,9 +111,9 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
       {/* Sidebar */}
       <div className={`
-        fixed inset-y-0 left-0 w-72 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 
-        text-white z-30 transform transition-all duration-300 ease-in-out
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
+        fixed inset-y-0 left-0 w-72 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900
+        text-white z-30 transform transition-all duration-300 ease-in-out flex flex-col
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         md:relative md:translate-x-0
         shadow-2xl border-r border-gray-700
       `}>
@@ -186,9 +180,13 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         </nav>
 
         {/* User Profile Section */}
-        <div className="border-t border-gray-700 p-4">
-          <div className="flex items-center space-x-3 p-3 rounded-xl bg-gray-800/50 mb-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-600 rounded-full flex items-center justify-center">
+        <div className="border-t border-gray-700 p-4 flex-shrink-0">
+          <NavLink
+            to="/profile"
+            onClick={() => setSidebarOpen(false)}
+            className="flex items-center space-x-3 p-3 rounded-xl bg-gray-800/50 mb-3 hover:bg-gray-700/70 transition-colors"
+          >
+            <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-600 rounded-full flex items-center justify-center flex-shrink-0">
               <UserIcon className="h-6 w-6 text-white" />
             </div>
             <div className="flex-1 min-w-0">
@@ -199,19 +197,10 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 {currentUser?.email}
               </p>
             </div>
-          </div>
+          </NavLink>
 
           {/* Action Buttons */}
           <div className="space-y-2">
-            <NavLink
-              to="/profile"
-              onClick={() => setSidebarOpen(false)}
-              className="flex items-center space-x-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-all duration-200"
-            >
-              <CogIcon className="h-4 w-4" />
-              <span>Settings</span>
-            </NavLink>
-
             <button
               onClick={handleLogout}
               className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-gray-300 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-all duration-200 group"

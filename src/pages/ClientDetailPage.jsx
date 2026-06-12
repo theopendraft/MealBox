@@ -5,6 +5,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { getCurrentMonth, getFullMonthLabel } from '../utils/cycles';
 import ClientInfoCard from '../components/ClientInfoCard';
+import { CardSkeleton } from '../components/ui/Skeleton';
 
 export default function ClientDetailPage() {
   const [client, setClient] = useState(null);
@@ -20,11 +21,7 @@ export default function ClientDetailPage() {
       .finally(() => setLoading(false));
   }, [clientId]);
 
-  if (loading) return (
-    <div className="flex items-center justify-center py-20 text-gray-400">
-      <div className="w-7 h-7 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
-    </div>
-  );
+  if (loading) return <CardSkeleton rows={6} />;
 
   if (!client) return (
     <div className="p-8 text-center text-gray-500">

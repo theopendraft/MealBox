@@ -6,6 +6,7 @@ import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestor
 import { useAuth } from '../context/AuthContext';
 import AddClientModal from '../components/AddClientModal';
 import ClientTable from '../components/ClientTable';
+import { ListSkeleton } from '../components/ui/Skeleton';
 
 export default function ClientListPage() {
   const [allClients, setAllClients] = useState([]);
@@ -138,9 +139,7 @@ export default function ClientListPage() {
 
       {/* Client list */}
       {loading ? (
-        <div className="flex justify-center py-12">
-          <div className="w-8 h-8 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
-        </div>
+        <ListSkeleton count={8} />
       ) : (
         <ClientTable
           clients={filteredClients}

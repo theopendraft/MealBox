@@ -6,6 +6,7 @@ import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../hooks/useSettings';
 import { createTodayRecords, getTodayStr } from '../utils/dailyRecords';
+import { CardSkeleton, ListSkeleton } from '../components/ui/Skeleton';
 import { useToast } from '../components/ui/Toast';
 import MilestoneCard from '../components/MilestoneCard';
 
@@ -149,11 +150,7 @@ export default function KitchenPage() {
       ))}
 
       {/* Loading */}
-      {isLoading && (
-        <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600" />
-        </div>
-      )}
+      {isLoading && <ListSkeleton count={5} />}
 
       {/* No records yet */}
       {!isLoading && !hasRecords && (

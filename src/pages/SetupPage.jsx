@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
 import { useToast } from '../components/ui/Toast';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
+import { CardSkeleton } from '../components/ui/Skeleton';
 import {
   BuildingStorefrontIcon,
   ClipboardDocumentListIcon,
@@ -212,8 +213,10 @@ export default function SetupPage() {
   if (!currentUser) return <Navigate to="/auth" replace />;
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600" />
+      <div className="min-h-screen bg-gray-50 p-6 max-w-2xl mx-auto space-y-4 pt-16">
+        <div className="bg-gray-200 animate-pulse h-16 w-16 rounded-2xl mx-auto mb-2" />
+        <div className="bg-gray-200 animate-pulse h-6 w-48 rounded-lg mx-auto mb-6" />
+        <CardSkeleton rows={5} />
       </div>
     );
   }

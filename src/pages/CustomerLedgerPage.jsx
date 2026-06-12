@@ -5,6 +5,7 @@ import { doc, getDoc, collection, query, where, onSnapshot, orderBy } from 'fire
 import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../hooks/useSettings';
+import { CardSkeleton } from '../components/ui/Skeleton';
 import { updateRecordStatus } from '../utils/dailyRecords';
 import {
   generateCycle, recalculateCycle, getMonthLabel, getFullMonthLabel,
@@ -166,11 +167,7 @@ export default function CustomerLedgerPage() {
   };
 
   if (!client) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600" />
-      </div>
-    );
+    return <CardSkeleton rows={5} />;
   }
 
   return (

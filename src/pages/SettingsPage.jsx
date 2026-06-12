@@ -1,8 +1,7 @@
 // src/pages/SettingsPage.jsx
 import { useState } from 'react';
 import { collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '../config/firebase';
+import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../hooks/useSettings';
 import { useToast } from '../components/ui/Toast';
@@ -16,7 +15,11 @@ import {
   XMarkIcon,
   ArrowPathIcon,
   PhotoIcon,
+  TrashIcon,
 } from '@heroicons/react/24/outline';
+import { CardSkeleton } from '../components/ui/Skeleton';
+
+const MAX_LOGO_BYTES = 512 * 1024; // 512 KB
 
 export default function SettingsPage() {
   const { currentUser } = useAuth();
@@ -28,7 +31,6 @@ export default function SettingsPage() {
   const [isMigrating, setIsMigrating] = useState(false);
   const [newArea, setNewArea] = useState('');
   const [logoUploading, setLogoUploading] = useState(false);
-  const [logoProgress, setLogoProgress] = useState(0);
 
   const [form, setForm] = useState(null);
 
@@ -50,22 +52,37 @@ export default function SettingsPage() {
   const handleLogoUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const storageRef = ref(storage, `logos/${currentUser.uid}/logo`);
-    const task = uploadBytesResumable(storageRef, file);
+
+    if (file.size > MAX_LOGO_BYTES) {
+      showError(`Logo too large (${(file.size / 1024).toFixed(0)} KB). Max allowed is 512 KB. Resize or compress it first.`);
+      e.target.value = '';
+      return;
+    }
+
     setLogoUploading(true);
-    setLogoProgress(0);
-    task.on(
-      'state_changed',
-      (snap) => setLogoProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)),
-      (err) => { console.error(err); showError('Logo upload failed.'); setLogoUploading(false); },
-      async () => {
-        const url = await getDownloadURL(task.snapshot.ref);
-        await saveSettings({ logoUrl: url });
-        set('logoUrl', url);
+    const reader = new FileReader();
+    reader.onload = async () => {
+      try {
+        const base64 = reader.result;
+        await saveSettings({ logoUrl: base64 });
+        set('logoUrl', base64);
+        showSuccess('Logo saved.');
+      } catch (err) {
+        console.error(err);
+        showError('Failed to save logo.');
+      } finally {
         setLogoUploading(false);
-        showSuccess('Logo uploaded.');
+        e.target.value = '';
       }
-    );
+    };
+    reader.onerror = () => { showError('Could not read file.'); setLogoUploading(false); };
+    reader.readAsDataURL(file);
+  };
+
+  const handleLogoRemove = async () => {
+    await saveSettings({ logoUrl: '' });
+    set('logoUrl', '');
+    showSuccess('Logo removed.');
   };
 
   const handleSave = async (e) => {
@@ -131,8 +148,11 @@ export default function SettingsPage() {
 
   if (loading || form === null) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+      <div className="space-y-6 max-w-2xl animate-pulse">
+        <div className="h-9 bg-gray-200 rounded-lg w-40" />
+        <CardSkeleton rows={6} />
+        <CardSkeleton rows={3} />
+        <CardSkeleton rows={2} />
       </div>
     );
   }
@@ -159,20 +179,37 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {/* Business Logo */}
-            <div className="flex items-center gap-4 pb-4 border-b border-gray-100">
+            <div className="flex items-start gap-4 pb-4 border-b border-gray-100">
               <div className="w-20 h-20 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden flex-shrink-0">
                 {form.logoUrl
                   ? <img src={form.logoUrl} alt="Business logo" className="w-full h-full object-contain" />
                   : <PhotoIcon className="w-10 h-10 text-gray-300" />
                 }
               </div>
-              <div>
+              <div className="flex-1">
                 <p className="text-sm font-medium text-gray-700 mb-1">Business Logo</p>
-                <p className="text-xs text-gray-400 mb-2">Appears on PDF bills. PNG or JPG, max 2 MB.</p>
-                <label className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium cursor-pointer transition-colors ${logoUploading ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-red-50 text-red-600 hover:bg-red-100'}`}>
-                  <input type="file" accept="image/png,image/jpeg" className="sr-only" onChange={handleLogoUpload} disabled={logoUploading} />
-                  {logoUploading ? `Uploading ${logoProgress}%…` : 'Upload Logo'}
-                </label>
+                <p className="text-xs text-gray-400 mb-1">Appears on PDF bills.</p>
+                <ul className="text-xs text-gray-400 mb-3 space-y-0.5">
+                  <li>• PNG or JPG only</li>
+                  <li>• Max size: <span className="font-medium text-gray-500">512 KB</span></li>
+                  <li>• Recommended: square, at least 200×200 px</li>
+                  <li>• Tip: use <a href="https://squoosh.app" target="_blank" rel="noopener noreferrer" className="text-red-500 underline">squoosh.app</a> to compress before uploading</li>
+                </ul>
+                <div className="flex items-center gap-2">
+                  <label className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium cursor-pointer transition-colors ${logoUploading ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-red-50 text-red-600 hover:bg-red-100'}`}>
+                    <input type="file" accept="image/png,image/jpeg" className="sr-only" onChange={handleLogoUpload} disabled={logoUploading} />
+                    {logoUploading ? 'Saving…' : form.logoUrl ? 'Change Logo' : 'Upload Logo'}
+                  </label>
+                  {form.logoUrl && (
+                    <button
+                      type="button"
+                      onClick={handleLogoRemove}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <TrashIcon className="h-4 w-4" /> Remove
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

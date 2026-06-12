@@ -6,6 +6,7 @@ import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../hooks/useSettings';
 import { getTodayStr, updateRecordStatus, lockMealSlot } from '../utils/dailyRecords';
+import { ListSkeleton } from '../components/ui/Skeleton';
 import { checkAndWriteMilestone } from '../utils/milestones';
 import ModifierPanel from '../components/ModifierPanel';
 import { useToast } from '../components/ui/Toast';
@@ -144,11 +145,7 @@ export default function DeliveryRoutePage() {
       </div>
 
       {/* Loading */}
-      {isLoading && (
-        <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600" />
-        </div>
-      )}
+      {isLoading && <ListSkeleton count={6} />}
 
       {/* No records */}
       {!isLoading && !hasRecords && (
