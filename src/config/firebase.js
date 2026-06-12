@@ -5,6 +5,7 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -24,6 +25,8 @@ export const db = getFirestore(app);
 
 // Enable offline persistence (silent fail if unsupported or multiple tabs)
 enableIndexedDbPersistence(db).catch(() => {});
+
+export const storage = getStorage(app);
 
 // Initialize auth providers
 export const googleProvider = new GoogleAuthProvider();

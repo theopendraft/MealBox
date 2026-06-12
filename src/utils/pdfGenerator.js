@@ -1,7 +1,6 @@
 // src/utils/pdfGenerator.js
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { PLAN_TYPES } from '../config/plans';
 
 const MONTH_NAMES = ['January','February','March','April','May','June',
   'July','August','September','October','November','December'];
@@ -46,9 +45,10 @@ const normal   = (doc)    => doc.setFont('helvetica', 'normal');
 
 // ─── Main builder ──────────────────────────────────────────────
 export const buildBillDoc = (cycle, client, settings = {}, qrDataURL = null, modifiers = [], logoDataURL = null) => {
-  const doc  = new jsPDF({ unit: 'mm', format: 'a4' });
-  const W    = 210;
-  const plan = PLAN_TYPES[client?.planType];
+  const doc     = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W       = 210;
+  const planMap = Object.fromEntries((settings.plans || []).map(p => [p.id, p]));
+  const plan    = planMap[client?.planType];
   const biz  = settings.businessName || 'MealBox Tiffin Service';
 
   // ══════════════════════════════════════════════════════════════

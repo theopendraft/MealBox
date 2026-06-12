@@ -69,18 +69,18 @@ const UserProfile = () => {
         <div className="max-w-6xl mx-auto py-8 px-4 animate-fade-in">
             {/* Header Card */}
             <Card className="overflow-hidden mb-8">
-                <div className="rounded-md bg-gradient-to-r from-red-600 to-orange-600 px-8 py-12 text-white">
-                    <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
-                        <div className="relative">
+                <div className="rounded-md bg-gradient-to-r from-red-600 to-orange-600 px-4 py-8 sm:px-8 sm:py-12 text-white">
+                    <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-8">
+                        <div className="relative flex-shrink-0">
                             {currentUser?.photoURL ? (
                                 <img
                                     src={currentUser.photoURL}
                                     alt="Profile"
-                                    className="w-32 h-32 rounded-full border-4 border-white shadow-lg"
+                                    className="w-20 h-20 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg"
                                 />
                             ) : (
-                                <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
-                                    <UserCircleIcon className="w-20 h-20 text-white" />
+                                <div className="w-20 h-20 sm:w-32 sm:h-32 bg-white/20 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
+                                    <UserCircleIcon className="w-14 h-14 sm:w-20 sm:h-20 text-white" />
                                 </div>
                             )}
                             <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-2 shadow-lg">
@@ -92,7 +92,7 @@ const UserProfile = () => {
                             </div>
                         </div>
                         <div className="text-center md:text-left flex-1">
-                            <h1 className="text-4xl font-bold mb-2">
+                            <h1 className="text-2xl sm:text-4xl font-bold mb-2">
                                 {currentUser?.displayName || 'User Profile'}
                             </h1>
                             <p className="text-xl text-red-100 mb-4">
@@ -113,11 +113,11 @@ const UserProfile = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex flex-col space-y-3">
+                        <div className="flex flex-row sm:flex-col gap-2 sm:gap-3 w-full sm:w-auto mt-2 md:mt-0">
                             <Button
                                 onClick={() => setShowPasswordChange(!showPasswordChange)}
                                 variant="outline"
-                                className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+                                className="flex-1 sm:flex-none justify-center bg-white/20 border-white/30 text-white hover:bg-white/30"
                             >
                                 <KeyIcon className="w-4 h-4 mr-2" />
                                 Change Password
@@ -125,7 +125,7 @@ const UserProfile = () => {
                             <Button
                                 onClick={handleLogout}
                                 variant="outline"
-                                className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+                                className="flex-1 sm:flex-none justify-center bg-white/20 border-white/30 text-white hover:bg-white/30"
                             >
                                 <ArrowRightOnRectangleIcon className="w-4 h-4 mr-2" />
                                 Sign Out

@@ -4,7 +4,7 @@ import { collectionGroup, collection, query, where, onSnapshot } from 'firebase/
 import { useNavigate } from 'react-router-dom';
 import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
-import { PLAN_TYPES, PLAN_BADGE } from '../config/plans';
+import { useSettings } from '../hooks/useSettings';
 import { createTodayRecords, getTodayStr } from '../utils/dailyRecords';
 import { useToast } from '../components/ui/Toast';
 import MilestoneCard from '../components/MilestoneCard';
@@ -20,6 +20,8 @@ const SPICE_STYLE = {
 
 export default function KitchenPage() {
   const { currentUser } = useAuth();
+  const { settings } = useSettings();
+  const planMap = Object.fromEntries((settings.plans || []).map(p => [p.id, p]));
   const navigate = useNavigate();
   const { showSuccess, showError, showInfo } = useToast();
 
@@ -73,7 +75,7 @@ export default function KitchenPage() {
   const handleStartDay = async () => {
     setStarting(true);
     try {
-      const result = await createTodayRecords(currentUser.uid);
+      const result = await createTodayRecords(currentUser.uid, planMap);
       if (result.created === 0 && result.alreadyExist === 0) {
         showInfo('No active clients are scheduled for delivery today.');
       } else if (result.created === 0) {
@@ -93,7 +95,7 @@ export default function KitchenPage() {
     acc.total++;
     acc.byPlan[r.planType] = (acc.byPlan[r.planType] || 0) + 1;
 
-    const base = r.chapatis || PLAN_TYPES[r.planType]?.chapatis || 5;
+    const base = r.chapatis || planMap[r.planType]?.chapatis || 5;
     const extra = (r.billingModifiers || [])
       .filter(m => m.type === 'extraChapati')
       .reduce((s, m) => s + (m.qty || 0), 0);
@@ -208,12 +210,12 @@ export default function KitchenPage() {
           <div className="bg-white rounded-2xl ring-1 ring-black/[0.04] p-5 shadow-sm">
             <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">Boxes to Pack</h3>
             <div className="grid grid-cols-2 gap-3">
-              {Object.entries(PLAN_TYPES).map(([key, plan]) => {
-                const count = stats.byPlan[key] || 0;
+              {(settings.plans || []).map(plan => {
+                const count = stats.byPlan[plan.id] || 0;
                 if (count === 0) return null;
                 return (
-                  <div key={key} className="flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3">
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${PLAN_BADGE[key]}`}>
+                  <div key={plan.id} className="flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3">
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${plan.badgeColor}`}>
                       {plan.label}
                     </span>
                     <span className="text-2xl font-bold text-gray-800">{count}</span>

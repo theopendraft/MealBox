@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { collection, doc, updateDoc, getDocs, addDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useToast } from './ui/Toast';
-import { PLAN_TYPES, PLAN_BADGE } from '../config/plans';
+import { useSettings } from '../hooks/useSettings';
 import AddClientModal from './AddClientModal';
 
 const STATUSES = [
@@ -30,6 +30,8 @@ export default function ClientInfoCard({ client, onClientUpdate }) {
   const [pauseMeal, setPauseMeal] = useState('both');
   const [isSavingPause, setIsSavingPause] = useState(false);
   const { showSuccess, showError } = useToast();
+  const { settings } = useSettings();
+  const planMap = Object.fromEntries((settings.plans || []).map(p => [p.id, p]));
 
   useEffect(() => {
     if (!client?.id) return;
@@ -40,7 +42,7 @@ export default function ClientInfoCard({ client, onClientUpdate }) {
 
   if (!client) return null;
 
-  const plan = PLAN_TYPES[client.planType];
+  const plan = planMap[client.planType];
   const currentStatusIndex = STATUSES.findIndex(s => s.key === (client.status || 'active'));
 
   const handleStatusChange = async (key) => {
@@ -101,7 +103,7 @@ export default function ClientInfoCard({ client, onClientUpdate }) {
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-white text-xl font-bold truncate">{client.name}</h2>
                 {plan && (
-                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${PLAN_BADGE[client.planType]}`}>
+                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${plan?.badgeColor ?? 'bg-gray-500 text-white'}`}>
                     {plan.label} · ₹{plan.price}
                   </span>
                 )}

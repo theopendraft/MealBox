@@ -5,7 +5,6 @@ import { doc, getDoc, collection, query, where, onSnapshot, orderBy } from 'fire
 import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../hooks/useSettings';
-import { PLAN_TYPES, PLAN_BADGE } from '../config/plans';
 import { updateRecordStatus } from '../utils/dailyRecords';
 import {
   generateCycle, recalculateCycle, getMonthLabel, getFullMonthLabel,
@@ -42,6 +41,7 @@ export default function CustomerLedgerPage() {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const { settings } = useSettings();
+  const planMap = Object.fromEntries((settings.plans || []).map(p => [p.id, p]));
   const { showSuccess, showError, showInfo } = useToast();
 
   const [client, setClient] = useState(null);
@@ -188,8 +188,8 @@ export default function CustomerLedgerPage() {
           <p className="text-xs text-gray-400">Monthly Ledger</p>
         </div>
         {client.planType && (
-          <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${PLAN_BADGE[client.planType]}`}>
-            {PLAN_TYPES[client.planType]?.label}
+          <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${planMap[client.planType]?.badgeColor ?? 'bg-gray-500 text-white'}`}>
+            {planMap[client.planType]?.label}
           </span>
         )}
       </div>
@@ -303,7 +303,7 @@ export default function CustomerLedgerPage() {
           </div>
           <div className="divide-y divide-gray-50">
             {[...records].reverse().map(record => {
-              const plan = PLAN_TYPES[record.planType];
+              const plan = planMap[record.planType];
               const extras = record.billingModifiers || [];
               const chapati = extras.filter(m => m.type === 'extraChapati').reduce((s, m) => s + m.qty, 0);
               const hasCurd = extras.some(m => m.type === 'extraCurd');
@@ -391,7 +391,7 @@ export default function CustomerLedgerPage() {
             <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-5" />
             <h2 className="text-lg font-bold text-gray-900 mb-1">{adjustingRecord.date}</h2>
             <div className="text-sm text-gray-500 mb-1">
-              {PLAN_TYPES[adjustingRecord.planType]?.label || adjustingRecord.planType} — ₹{adjustingRecord.dayTotal || adjustingRecord.basePriceSnapshot}
+              {planMap[adjustingRecord.planType]?.label || adjustingRecord.planType} — ₹{adjustingRecord.dayTotal || adjustingRecord.basePriceSnapshot}
             </div>
             {(adjustingRecord.billingModifiers || []).length > 0 && (
               <div className="text-xs text-gray-400 mb-4">

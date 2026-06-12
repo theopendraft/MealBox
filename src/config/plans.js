@@ -1,4 +1,5 @@
-// src/config/plans.js
+// DEPRECATED — plans are now stored per-owner in Firestore: settings/{uid}.plans
+// This file is kept only as a reference; nothing imports from it anymore.
 
 export const PLAN_TYPES = {
   regular: {

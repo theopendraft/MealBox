@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
+import { useSettings } from '../hooks/useSettings';
 import { createTodayRecords } from '../utils/dailyRecords';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
@@ -11,6 +12,7 @@ import AddClientModal from './AddClientModal';
 
 export default function Layout({ children }) {
   const { currentUser } = useAuth();
+  const { settings } = useSettings();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [addClientOpen, setAddClientOpen] = useState(false);
@@ -29,7 +31,10 @@ export default function Layout({ children }) {
       const count = snap.docs.length;
       if (clientCountRef.current === null || count > clientCountRef.current) {
         clientCountRef.current = count;
-        try { await createTodayRecords(currentUser.uid); } catch { /* silent */ }
+        try {
+          const planMap = Object.fromEntries((settings.plans || []).map(p => [p.id, p]));
+          await createTodayRecords(currentUser.uid, planMap);
+        } catch { /* silent */ }
       } else {
         clientCountRef.current = count;
       }
@@ -68,7 +73,7 @@ export default function Layout({ children }) {
         </main>
       </div>
 
-      <BottomNavBar onFabPress={() => setAddClientOpen(true)} />
+      <BottomNavBar onFabPress={() => setAddClientOpen(true)} sidebarOpen={sidebarOpen} />
 
       <AddClientModal
         isOpen={addClientOpen}

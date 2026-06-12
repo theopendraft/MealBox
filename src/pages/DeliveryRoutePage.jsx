@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../hooks/useSettings';
-import { PLAN_TYPES, PLAN_BADGE } from '../config/plans';
 import { getTodayStr, updateRecordStatus, lockMealSlot } from '../utils/dailyRecords';
 import { checkAndWriteMilestone } from '../utils/milestones';
 import ModifierPanel from '../components/ModifierPanel';
@@ -29,6 +28,7 @@ export default function DeliveryRoutePage() {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const { settings } = useSettings();
+  const planMap = Object.fromEntries((settings.plans || []).map(p => [p.id, p]));
   const { showSuccess, showError } = useToast();
 
   const [records, setRecords] = useState(null);
@@ -298,7 +298,7 @@ export default function DeliveryRoutePage() {
 }
 
 const DeliveryCard = memo(function DeliveryCard({ record, onStatusChange, onModify }) {
-  const plan = PLAN_TYPES[record.planType];
+  const plan = planMap[record.planType];
   const isLocked = record.status === 'locked';
   const isDelivered = record.status === 'delivered';
   const isSkipped = record.status === 'skipped';
@@ -324,7 +324,7 @@ const DeliveryCard = memo(function DeliveryCard({ record, onStatusChange, onModi
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-semibold text-gray-900">{record.customerName}</span>
             {plan && (
-              <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${PLAN_BADGE[record.planType]}`}>
+              <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${planMap[record.planType]?.badgeColor ?? 'bg-gray-500 text-white'}`}>
                 {plan.label}
               </span>
             )}

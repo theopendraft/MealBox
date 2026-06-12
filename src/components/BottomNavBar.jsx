@@ -24,9 +24,9 @@ const NavItem = ({ item }) => (
   </NavLink>
 );
 
-export default function BottomNavBar({ onFabPress }) {
+export default function BottomNavBar({ onFabPress, sidebarOpen }) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-gray-200/60 md:hidden z-30 safe-area-pb">
+    <nav className={`fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-gray-200/60 md:hidden z-30 safe-area-pb${sidebarOpen ? ' hidden' : ''}`}>
       {/* FAB — centered, elevated above nav */}
       <div className="absolute -top-6 left-1/2 -translate-x-1/2">
         <button

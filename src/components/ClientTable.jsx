@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useToast } from './ui/Toast';
-import { PLAN_TYPES, PLAN_BADGE } from '../config/plans';
+import { useSettings } from '../hooks/useSettings';
 import { deleteClientAndData } from '../utils/deleteClient';
 
 const STATUS_DOT = {
@@ -13,6 +13,8 @@ const STATUS_DOT = {
 
 export default function ClientTable({ clients, onDeleteSuccess, onEditClick }) {
   const { showSuccess, showError } = useToast();
+  const { settings } = useSettings();
+  const planMap = Object.fromEntries((settings.plans || []).map(p => [p.id, p]));
   const [confirmingId, setConfirmingId] = useState(null);
 
   const requestDelete = (id) => {
@@ -46,7 +48,7 @@ export default function ClientTable({ clients, onDeleteSuccess, onEditClick }) {
   return (
     <div className="space-y-2">
       {clients.map(client => {
-        const plan = PLAN_TYPES[client.planType];
+        const plan = planMap[client.planType];
         const status = client.status || 'active';
 
         return (
@@ -64,7 +66,7 @@ export default function ClientTable({ clients, onDeleteSuccess, onEditClick }) {
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-semibold text-gray-900 text-sm">{client.name}</span>
                   {plan && (
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${PLAN_BADGE[client.planType]}`}>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${plan?.badgeColor ?? 'bg-gray-500 text-white'}`}>
                       {plan.label}
                     </span>
                   )}

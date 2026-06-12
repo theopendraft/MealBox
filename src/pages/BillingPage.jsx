@@ -5,7 +5,6 @@ import { db } from '../config/firebase';
 import { collection, collectionGroup, doc, updateDoc, query, where, onSnapshot } from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../hooks/useSettings';
-import { PLAN_TYPES, PLAN_BADGE } from '../config/plans';
 import {
   generateCycle, markCyclePaid, settleCycle,
   getFullMonthLabel, getPrevMonth, getNextMonth, getCurrentMonth,
@@ -38,6 +37,7 @@ const formatDueDate = (dueStr) => {
 export default function BillingPage() {
   const { currentUser } = useAuth();
   const { settings } = useSettings();
+  const planMap = Object.fromEntries((settings.plans || []).map(p => [p.id, p]));
   const navigate = useNavigate();
   const { showSuccess, showError, showInfo } = useToast();
 
@@ -320,7 +320,7 @@ export default function BillingPage() {
 
           {unpaidClients.map(client => {
             const cycle = cycles[client.id];
-            const plan = PLAN_TYPES[client.planType];
+            const plan = planMap[client.planType];
             const isGenerating = generatingIds.has(client.id);
             const isWaLoading = waLoading === client.id;
             const clientOverdue = isPastDue && (!cycle || cycle.totalAmount === 0);
@@ -339,7 +339,7 @@ export default function BillingPage() {
                         {client.name}
                       </button>
                       {plan && (
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${PLAN_BADGE[client.planType]}`}>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${planMap[client.planType]?.badgeColor ?? 'bg-gray-500 text-white'}`}>
                           {plan.label} · ₹{plan.price}/day
                         </span>
                       )}
@@ -422,7 +422,7 @@ export default function BillingPage() {
           </div>
           {paidClients.map(client => {
             const cycle = cycles[client.id];
-            const plan = PLAN_TYPES[client.planType];
+            const plan = planMap[client.planType];
             return (
               <div key={client.id} className="bg-white rounded-2xl ring-1 ring-black/[0.04] shadow-sm px-4 py-3 opacity-80">
                 <div className="flex items-center justify-between">
@@ -430,7 +430,7 @@ export default function BillingPage() {
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-gray-700">{client.name}</span>
                       {plan && (
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${PLAN_BADGE[client.planType]}`}>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${planMap[client.planType]?.badgeColor ?? 'bg-gray-500 text-white'}`}>
                           {plan.label}
                         </span>
                       )}

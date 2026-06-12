@@ -5,7 +5,6 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../hooks/useSettings';
-import { PLAN_TYPES, PLAN_BADGE } from '../config/plans';
 
 const TEMPLATES = [
   {
@@ -52,6 +51,7 @@ const buildLink = (phone, message) =>
 export default function BroadcastPage() {
   const { currentUser } = useAuth();
   const { settings } = useSettings();
+  const planMap = Object.fromEntries((settings.plans || []).map(p => [p.id, p]));
   const navigate = useNavigate();
 
   const [clients, setClients] = useState([]);
@@ -200,7 +200,7 @@ export default function BroadcastPage() {
 
           <div className="divide-y divide-gray-50">
             {recipients.map(client => {
-              const plan = PLAN_TYPES[client.planType];
+              const plan = planMap[client.planType];
               const msg = personalize(messageText, client);
               const link = buildLink(client.phone, msg);
               return (
@@ -213,7 +213,7 @@ export default function BroadcastPage() {
                       <div className="font-medium text-gray-800 text-sm truncate">{client.name}</div>
                       <div className="flex items-center gap-1.5 mt-0.5">
                         {plan && (
-                          <span className={`px-1.5 py-0.5 rounded text-xs font-semibold ${PLAN_BADGE[client.planType]}`}>
+                          <span className={`px-1.5 py-0.5 rounded text-xs font-semibold ${planMap[client.planType]?.badgeColor ?? 'bg-gray-500 text-white'}`}>
                             {plan.label}
                           </span>
                         )}

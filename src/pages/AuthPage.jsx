@@ -76,8 +76,7 @@ const AuthPage = () => {
                     throw new Error('Passwords do not match');
                 }
                 await signup(formData.email, formData.password);
-                setSuccess('Account created successfully! A verification email has been sent to your email address. Please check your inbox (and spam folder) to verify your account.');
-                setShowResendVerification(true);
+                navigate('/setup');
             }
         } catch (err) {
             // Handle specific Firebase errors for better user experience

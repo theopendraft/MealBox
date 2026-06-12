@@ -4,7 +4,6 @@ import { db } from '../config/firebase';
 import { collection, addDoc, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../hooks/useSettings';
-import { PLAN_TYPES, PLAN_BADGE, PLAN_IS_ONETIME } from '../config/plans';
 
 const getTodayStr = () => {
   const t = new Date();
@@ -62,6 +61,7 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
   const [saving, setSaving] = useState(false);
   const { currentUser } = useAuth();
   const { settings } = useSettings();
+  const planMap = Object.fromEntries((settings.plans || []).map(p => [p.id, p]));
 
   useEffect(() => {
     if (!isOpen) return;
@@ -79,8 +79,8 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
   const isLast = stepIdx >= steps.length - 1;
   const isOnetime = category === 'ondemand';
 
-  const allowedPlans = Object.keys(PLAN_TYPES).filter(k =>
-    isOnetime ? PLAN_IS_ONETIME[k] : !PLAN_IS_ONETIME[k]
+  const allowedPlans = (settings.plans || []).filter(p =>
+    isOnetime ? p.isOnetime : !p.isOnetime
   );
 
   const set = (f, v) => setForm(p => ({ ...p, [f]: v }));
@@ -117,7 +117,7 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
     if (!isLast) { goNext(); return; } // safety: Enter key shouldn't skip steps
     setSaving(true);
     try {
-      const plan = PLAN_TYPES[form.planType];
+      const plan = planMap[form.planType];
       const payload = {
         name: form.name.trim(),
         phone: form.phone.trim(),
@@ -291,25 +291,22 @@ export default function AddClientModal({ isOpen, onClose, onSuccess, clientToEdi
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Select Plan *</label>
                 <div className="space-y-2">
-                  {allowedPlans.map(key => {
-                    const plan = PLAN_TYPES[key];
-                    return (
-                      <button
-                        key={key}
-                        type="button"
-                        onClick={() => set('planType', key)}
-                        className={`w-full p-4 rounded-2xl border-2 text-left flex items-center gap-4 transition-all active:scale-[0.98] ${
-                          form.planType === key ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-gray-50 hover:border-gray-300'
-                        }`}
-                      >
-                        <div className="flex-1">
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${PLAN_BADGE[key]}`}>{plan.label}</span>
-                          <p className="text-xs text-gray-500 mt-1">{plan.description}</p>
-                        </div>
-                        <span className="text-lg font-bold text-gray-900 flex-shrink-0">₹{plan.price}</span>
-                      </button>
-                    );
-                  })}
+                  {allowedPlans.map(plan => (
+                    <button
+                      key={plan.id}
+                      type="button"
+                      onClick={() => set('planType', plan.id)}
+                      className={`w-full p-4 rounded-2xl border-2 text-left flex items-center gap-4 transition-all active:scale-[0.98] ${
+                        form.planType === plan.id ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-gray-50 hover:border-gray-300'
+                      }`}
+                    >
+                      <div className="flex-1">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${plan.badgeColor}`}>{plan.label}</span>
+                        <p className="text-xs text-gray-500 mt-1">{plan.description}</p>
+                      </div>
+                      <span className="text-lg font-bold text-gray-900 flex-shrink-0">₹{plan.price}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
 

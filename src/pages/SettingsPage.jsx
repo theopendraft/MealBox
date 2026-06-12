@@ -1,7 +1,8 @@
 // src/pages/SettingsPage.jsx
 import { useState } from 'react';
 import { collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../hooks/useSettings';
 import { useToast } from '../components/ui/Toast';
@@ -14,6 +15,7 @@ import {
   PlusIcon,
   XMarkIcon,
   ArrowPathIcon,
+  PhotoIcon,
 } from '@heroicons/react/24/outline';
 
 export default function SettingsPage() {
@@ -25,6 +27,8 @@ export default function SettingsPage() {
   const [migrationStatus, setMigrationStatus] = useState(null);
   const [isMigrating, setIsMigrating] = useState(false);
   const [newArea, setNewArea] = useState('');
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [logoProgress, setLogoProgress] = useState(0);
 
   const [form, setForm] = useState(null);
 
@@ -37,10 +41,32 @@ export default function SettingsPage() {
       email: settings.email,
       upiId: settings.upiId,
       businessAddress: settings.businessAddress || '',
+      logoUrl: settings.logoUrl || '',
       modifierRates: { ...settings.modifierRates },
       routeAreas: [...(settings.routeAreas || [])],
     });
   }
+
+  const handleLogoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const storageRef = ref(storage, `logos/${currentUser.uid}/logo`);
+    const task = uploadBytesResumable(storageRef, file);
+    setLogoUploading(true);
+    setLogoProgress(0);
+    task.on(
+      'state_changed',
+      (snap) => setLogoProgress(Math.round((snap.bytesTransferred / snap.totalBytes) * 100)),
+      (err) => { console.error(err); showError('Logo upload failed.'); setLogoUploading(false); },
+      async () => {
+        const url = await getDownloadURL(task.snapshot.ref);
+        await saveSettings({ logoUrl: url });
+        set('logoUrl', url);
+        setLogoUploading(false);
+        showSuccess('Logo uploaded.');
+      }
+    );
+  };
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -132,6 +158,23 @@ export default function SettingsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Business Logo */}
+            <div className="flex items-center gap-4 pb-4 border-b border-gray-100">
+              <div className="w-20 h-20 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden flex-shrink-0">
+                {form.logoUrl
+                  ? <img src={form.logoUrl} alt="Business logo" className="w-full h-full object-contain" />
+                  : <PhotoIcon className="w-10 h-10 text-gray-300" />
+                }
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-700 mb-1">Business Logo</p>
+                <p className="text-xs text-gray-400 mb-2">Appears on PDF bills. PNG or JPG, max 2 MB.</p>
+                <label className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium cursor-pointer transition-colors ${logoUploading ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-red-50 text-red-600 hover:bg-red-100'}`}>
+                  <input type="file" accept="image/png,image/jpeg" className="sr-only" onChange={handleLogoUpload} disabled={logoUploading} />
+                  {logoUploading ? `Uploading ${logoProgress}%…` : 'Upload Logo'}
+                </label>
+              </div>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Business Name</label>

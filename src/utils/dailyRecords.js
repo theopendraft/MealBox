@@ -1,7 +1,6 @@
 // src/utils/dailyRecords.js
 import { collection, doc, setDoc, getDoc, getDocs, updateDoc, query, where } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { PLAN_TYPES } from '../config/plans';
 
 export const getTodayStr = () => {
   const d = new Date();
@@ -15,7 +14,7 @@ const getDayName = () =>
 const detectMealSlot = (timePreference = '') =>
   (timePreference.startsWith('07:') || timePreference.startsWith('08:')) ? 'dinner' : 'lunch';
 
-export const createTodayRecords = async (ownerId) => {
+export const createTodayRecords = async (ownerId, planMap = {}) => {
   const dateStr = getTodayStr();
   const dayName = getDayName();
 
@@ -29,7 +28,7 @@ export const createTodayRecords = async (ownerId) => {
   for (const clientDoc of clientsSnap.docs) {
     const client = { id: clientDoc.id, ...clientDoc.data() };
     const planType = client.planType || 'regular';
-    const plan = PLAN_TYPES[planType];
+    const plan = planMap[planType];
     if (!plan) continue;
 
     if (client.customerType === 'ondemand') {

@@ -16,6 +16,7 @@ import BillingPage from '../pages/BillingPage';
 import GenerateBillPage from '../pages/GenerateBillPage';
 import BillDetailPage from '../pages/BillDetailPage';
 import LandingPage from '../pages/LandingPage1';
+import SetupPage from '../pages/SetupPage';
 import { useAuth } from '../context/AuthContext';
 
 // If logged in, skip the landing page and go straight to dashboard
@@ -39,6 +40,7 @@ export default function AppRoutes() {
 
       <Route path="/login" element={<AuthPage />} />
       <Route path="/auth" element={<AuthPage />} />
+      <Route path="/setup" element={<SetupPage />} />
       <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
       <Route path="/dashboard/analytics" element={
         <ProtectedRoute>

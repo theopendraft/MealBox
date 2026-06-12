@@ -14,6 +14,7 @@ import {
   CogIcon,
   WrenchScrewdriverIcon,
   FireIcon,
+  ClipboardDocumentListIcon,
 } from '@heroicons/react/24/outline';
 import {
   HomeIcon as HomeIconSolid,
@@ -25,6 +26,7 @@ import {
   CogIcon as CogIconSolid,
   WrenchScrewdriverIcon as WrenchScrewdriverIconSolid,
   FireIcon as FireIconSolid,
+  ClipboardDocumentListIcon as ClipboardDocumentListIconSolid,
 } from '@heroicons/react/24/solid';
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
@@ -86,6 +88,13 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       icon: WrenchScrewdriverIcon,
       iconSolid: WrenchScrewdriverIconSolid,
       description: 'Business & rates'
+    },
+    {
+      name: 'Menu & Plans',
+      path: '/setup',
+      icon: ClipboardDocumentListIcon,
+      iconSolid: ClipboardDocumentListIconSolid,
+      description: 'Manage meal plans'
     },
   ];
 
